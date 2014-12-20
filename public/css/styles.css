@@ -1,0 +1,314 @@
+/**
+ * styles.css
+ *
+ * Computer Science 50
+ * Project
+ *
+ * Global CSS.
+ */
+
+.container
+{
+    /* center contents */
+    margin: 0 auto;
+    text-align: center;
+    color: #000060;
+}
+
+table
+{
+    border: 2px solid #0000A0;
+    margin: 10px auto 20px;
+    padding: 2px;
+}
+
+thead, tbody, tfoot
+{
+    border: none;
+}
+
+th
+{
+    border: 1px solid #F0F0FF;
+    padding: 2px 10px;
+    text-align: center;
+    color: #F0F0FF;
+    vertical-align: bottom;
+    font-size: larger;
+    background-color: #0000A0;
+}
+
+td
+{
+    border: 1px solid #0000A0;
+    padding: 2px 10px;
+    text-align: center;
+}
+
+table.open
+{
+    border: none;
+    margin: 10px auto;
+}
+
+table.open tbody
+{
+    border-style: none solid;
+    border-color: black transparent;
+}
+
+table.open td
+{
+    border-style: none solid;
+    border-color: darkgreen;
+    color: darkgreen;
+    padding: 2px 6px;
+    text-align: center;
+    font-size: larger;
+}
+
+h1
+{
+    color: darkblue;
+}
+
+#middle .form-tiny
+{
+    /* center form controls */
+    display: inline-block;
+
+    // setup for smaller controls
+    font-size: 67%;
+
+    /* override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+#middle .form-small
+{
+    /* center form controls */
+    display: inline-block;
+
+    // setup for smaller controls
+    font-size: smaller;
+
+    /* override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+#middle .form-control
+{
+    /* center form controls */
+    display: inline-block;
+
+    /* override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+footer
+{
+    /* shrink bottom's font size */
+    font-size: smaller;
+
+    /* surround with whitespace */
+    margin: 20px;
+}
+
+.right
+{
+    text-align: right;
+}
+
+.rightpad1
+{
+    text-align: right;
+    padding-right: 20px;
+}
+
+.rightpad2
+{
+    text-align: right;
+    padding-right: 30px;
+}
+
+.left
+{
+    text-align: left;
+}
+
+.bright
+{
+    text-align: right;
+    font-weight: bold;
+}
+
+.brightpad1
+{
+    text-align: right;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.rleft
+{
+    text-align: left;
+    font-weight: bold;
+}
+
+.irightpad2
+{
+    text-align: right;
+    padding-right: 30px;
+    font-style: italic;
+}
+
+.ileft
+{
+    text-align: left;
+    font-style: italic;
+}
+
+.medium
+{
+    color: darkgreen;
+    font-size: 125%;
+    font-weight: bold;
+}
+
+.medital
+{
+    color: darkgreen;
+    font-size: 125%;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.meditalul
+{
+    color: darkgreen;
+    font-size: 125%;
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
+}
+
+.smallital
+{
+    color: grey;
+    font-size: smaller;
+    font-style: italic;
+}
+
+.bigred
+{
+    font-size: 180%;
+    font-style: italic;
+    font-weight: bold;
+    color: darkred;
+}
+
+.bigredul
+{
+    font-size: 180%;
+    font-style: italic;
+    text-decoration: underline;
+    font-weight: bold;
+    color: darkred;
+}
+
+.dkblue
+{
+    color: darkblue;
+}
+
+.small
+{
+    font-size: 75%;
+    font-style: italic;
+    color: grey;
+}
+
+.highlight
+{
+    border: 1px solid #0000A0;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    background-color: paleturquoise;
+    color: blue;
+}
+
+.twoCols
+{
+    width: 40%;
+    float: left;
+}
+
+.F
+{
+    background-color: #f7f7f2;
+}
+
+.BB
+{
+    background-color: #ffe7e7;
+}
+
+.AB
+{
+    background-color: #f5b5b5;
+}
+
+.BL
+{
+    background-color: #fafacc;
+}
+
+.AL
+{
+    background-color: #f0f080;
+}
+.BD
+{
+    background-color: #e0fcd7;
+}
+
+.AD
+{
+    background-color: #99e599;
+}
+
+.R
+{
+    background-color: #e0e0d0;
+}
+
+.ALL
+{
+    background-color: #5555d0;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.bgTable
+{
+    border-collapse: collapse;
+    border: none;
+}
+
+.bgTable td
+{
+    text-align: left;
+}
+
+.center
+{
+    text-align: center !important;
+}
+
+td.bgEntry
+{
+    border: none !important;
+    font-size: 3em;
+    font-weight: bold;
+}
