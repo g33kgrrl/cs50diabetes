@@ -17,11 +17,11 @@
 	}
 	catch(Exception $ex) {
 // Uncomment these lines to reconnect a new CS50 Diabetes user to an existing FatSecret user
-            if ($ex->GetCode() != 106) {
+//          if ($ex->GetCode() != 106) {
                 apologize("Unable to create FS profile!<br/>"
                           . 'Error: ' . $ex->getCode() . ' - ' . $ex->getMessage(),
                           $regurl);
-            }
+//          }
 	}
 	try {
             $API->ProfileGetAuth($username, $token2, $secret2);
