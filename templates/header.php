@@ -21,20 +21,19 @@
     </head>
 
     <body>
-        <div class="container"><br/>
-            <div id="top" class="bigblue">
-                <a href="/"><?=APPLICATION?></a><br/>
-            </div>
-<?php
-    if (!empty($_SESSION['id']))
-    {
-        if ($suppressFS === false)
-        {
-?>
-            <div style="width: 560px; margin: 0 auto; float: right;">
-                <script src="<?=API_LOAD?>key=<?=API_KEY?>&amp;auto_load=true&amp;theme=blue_small"></script>
-            </div>
-<?php
-        }
-    }
-?>
+        <div class="container">
+            <img src="/img/CS50Diabetes.png" title="CS50 Diabetes" width="600" height="186" />
+
+            <?php
+                if (!empty($_SESSION['id']))
+                {
+                    if ($suppressFS === false)
+                    {
+            ?>
+                        <div style="width: 560px; margin: 0 auto; float: right;">
+                            <script src="<?=API_LOAD?>key=<?=API_KEY?>&amp;auto_load=true&amp;theme=blue_small"></script>
+                        </div>
+            <?php
+                    }
+                }
+            ?>
