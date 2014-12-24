@@ -1,5 +1,16 @@
 <?php
 
+    /*******************************\
+    *                               *
+    * logout.php                    *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Logout user.                  *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php"); 
 

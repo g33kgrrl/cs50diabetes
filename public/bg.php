@@ -1,5 +1,16 @@
 <?php
 
+    /*******************************\
+    *                               *
+    * bg.php                        *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Enter BG reading.             *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php");
 
@@ -15,7 +26,7 @@
             apologize("\"{$bgReading}\" is not a valid reading.");
         }
         
-        $mealtime = $_POST["mealtime"];      
+        $mealtime = $_POST["mealtime"];
         
         // add bg reading to log
         $addReading = query("INSERT INTO bglog (id, mealtime, reading) VALUES(?, ?, ?)", $_SESSION["id"], $mealtime, $bgReading);

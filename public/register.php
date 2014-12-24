@@ -1,5 +1,16 @@
 <?php
 
+    /*******************************\
+    *                               *
+    * register.php                  *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Register new user.            *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php");
 
@@ -13,23 +24,19 @@
         }
 
 	try {
-	    $API->ProfileCreate($username, $token, $secret);
+	    $FS->ProfileCreate($username, $token, $secret);
 	}
 	catch(Exception $ex) {
 // Uncomment these lines to reconnect a new CS50 Diabetes user to an existing FatSecret user
 //          if ($ex->GetCode() != 106) {
-                apologize("Unable to create FS profile!<br/>"
-                          . 'Error: ' . $ex->getCode() . ' - ' . $ex->getMessage(),
-                          $regurl);
+                $FS->Apologize("Unable to create FS profile!", $ex, $regurl);
 //          }
 	}
 	try {
-            $API->ProfileGetAuth($username, $token2, $secret2);
+            $FS->ProfileGetAuth($username, $token2, $secret2);
 	}
 	catch(FatSecretException $ex) {
-            apologize("Unable to authorize FS profile!"
-                      . 'Error: ' . $ex->getCode() . ' - ' . $ex->getMessage(),
-                      $regurl);
+            $FS->Apologize("Unable to authorize FS profile!",$ex,$regurl);
 	}
         if ((string)$token !== (string)$token2)
         {

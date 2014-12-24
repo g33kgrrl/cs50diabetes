@@ -1,5 +1,16 @@
 <?php
 
+    /*******************************\
+    *                               *
+    * chgpwd.php                    *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Change password.              *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php");
 

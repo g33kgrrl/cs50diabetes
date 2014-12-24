@@ -2,7 +2,7 @@
  * scripts.js
  *
  * Computer Science 50
- * Problem Set 7
+ * Final Project
  *
  * Global JavaScript, if any.
  */

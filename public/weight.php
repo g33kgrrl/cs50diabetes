@@ -1,18 +1,31 @@
-<!DOCTYPE html>
-
 <?php
+
+    /*******************************\
+    *                               *
+    * weight.php                    *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Get weight log.               *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php"); 
+
     $weightlog;
-    try {
-        $weightlog = $API->WeightGetMonth();
+    try
+    {
+        $weightlog = $FS->WeightGetMonth();
     }
-    catch(FatSecretException $ex) {
-        apologize("Unable to get FS weight log!  "
-                . "Error: " . $ex->getCode() . " - " . $ex->getMessage());
+    catch(FatSecretException $ex)
+    {
+        $FS->Apologize("Unable to get FS weight log!", $ex);
     }
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 
     <head>
