@@ -1,5 +1,17 @@
 <?php
 
+    /*******************************\
+    *                               *
+    * login.php                     *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Login user and authenticate   *
+    *   with FatSecret.             *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php"); 
 
@@ -27,12 +39,15 @@
             apologize("Invalid password",$url);
         }
 
-	try {
-            $API->ProfileGetAuth($username, $token, $secret);
+        $token;
+        $secret;
+	try
+        {
+            $FS->ProfileGetAuth($username, $token, $secret);
 	}
-	catch(FatSecretException $ex) {
-            apologize("Unable to authorize FS profile!  Error: " . $ex->getCode()
-                      . " - " . $ex->getMessage(), $url);
+	catch(FatSecretException $ex)
+        {
+            $FS->Apologize("Unable to authorize FS profile!", $ex, $url);
 	}
 
         // log the user in, and remember that user is now logged in by storing

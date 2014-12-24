@@ -1,18 +1,28 @@
-<!DOCTYPE html>
-
 <?php
+
+    /*******************************\
+    *                               *
+    * food.php                      *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Display food log.             *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php"); 
     $foodlog;
     try {
-        $foodlog = $API->SearchFood("Strawberry");
+        $foodlog = $FS->SearchFood("Strawberry");
     }
     catch(FatSecretException $ex) {
-        apologize("Unable to get FS food most recently eaten!  "
-                . "Error: " . $ex->getCode() . " - " . $ex->getMessage());
+        $FS->Apologize("Unable to get food most recently eaten!", $ex);
     }
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 
     <head>

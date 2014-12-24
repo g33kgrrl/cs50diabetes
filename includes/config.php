@@ -19,7 +19,7 @@
     require("constants.php");
     require("functions.php");
     require_once('../FSphp/lib/FatSecretAPI.php');
-    $API = new FatSecretAPI(API_KEY, API_SECRET);
+    $FS = new FatSecretAPI(API_KEY, API_SECRET);
     $token;
     $secret;
 

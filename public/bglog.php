@@ -1,5 +1,16 @@
 <?php
 
+    /*******************************\
+    *                               *
+    * bglog.php                     *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Display BG log history.       *
+    *                               *
+    \*******************************/
+
     // configuration
     require("../includes/config.php");
     
@@ -9,8 +20,6 @@
         
     // tack on blood glucose log and page title before passing data to render()       
     render(makeusertitle(null,false,"Blood Glucose Log"), "bglog_form.php",
-           [ "bgLog" => $bgLog,
-             "bgMealtimeAvgs" => $bgMealtimeAvgs],
-           true);
+           [ "bgLog" => $bgLog, "bgMealtimeAvgs" => $bgMealtimeAvgs], true);
 
 ?>

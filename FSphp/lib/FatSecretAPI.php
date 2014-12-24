@@ -3,11 +3,11 @@
 class FatSecretAPI
 {
 
-    /* Private Data */
+    // Private Data
     private $_consumerKey;
     private $_consumerSecret;
 
-        /* Constructors */	
+    // Constructors
     function FatSecretAPI($consumerKey, $consumerSecret)
     {
         $this->_consumerKey = $consumerKey;
@@ -15,7 +15,7 @@ class FatSecretAPI
         return $this;
     }
 
-    /* Properties */
+    // Properties
     function GetKey()
     {
         return $this->_consumerKey;
@@ -36,17 +36,28 @@ class FatSecretAPI
         $this->_consumerSecret = $consumerSecret;
     }
 
+    // Public Methods
+
+    // Convert timestamp (seconds since epoch) to FS timestamp (days since epoch)
+    //   @param time {timestamp} Seconds since epoch
     function DateInt($time)
     {
         return floor($time / 3600 / 24);
     }
 
-    /* Public Methods */
-    /* Create a new profile with a user specified ID
-    * @param userID {string} Your ID for the newly created profile (set to null if you are not using your own IDs)
-    * @param token {string} The token for the newly created profile is returned here
-    * @param secret {string} The secret for the newly created profile is returned here
-    */
+    // Display apology graphic and message, plus FS error information
+    //   @param msg {string} Apology message
+    //   @param ex {FatSecretException} Error structure from FatSecret API
+    //   @param url {string} Url to continue to when user clicks through the error
+    function Apologize($msg,$ex,$url)
+    {
+        apologize($msg . " Error: " . $ex->getCode() . " - " . $ex->getMessage(), $url);
+    }
+
+    // Create a new profile with a user specified ID
+    //   @param userID {string} Your ID for the newly created profile (set to null if you are not using your own IDs)
+    //   @param token {string} The token for the newly created profile is returned here
+    //   @param secret {string} The secret for the newly created profile is returned here
     function ProfileCreate($userID, &$token, &$secret)
     {
         $url = API_REST . 'method=profile.create';
@@ -56,15 +67,14 @@ class FatSecretAPI
 
         $oauth = new OAuthBase();
 
-        $nReqUrl;
-        $nReqParams;
-
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
-                                null, null, $nReqUrl, $nReqParams);
+                                null, null, $reqUrl, $reqParams);
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+        $rsp = $this->GetQueryResponse($reqUrl, $prm);
 
         $doc = new SimpleXMLElement($rsp);
         $this->ErrorCheck($doc);
@@ -84,15 +94,14 @@ class FatSecretAPI
         
         $oauth = new OAuthBase();
         
-        $nReqUrl;
-        $nReqParams;
-        
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
-                                null, null, $nReqUrl, $nReqParams);
+                                null, null, $reqUrl, $reqParams);
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+        $rsp = $this->GetQueryResponse($reqUrl, $prm);
 
         $doc = new SimpleXMLElement($rsp);
         $this->ErrorCheck($doc);
@@ -130,16 +139,15 @@ class FatSecretAPI
                 
         $oauth = new OAuthBase();
         
-        $nReqUrl;
-        $nReqParams;
-        
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
                                 $auth['token'], $auth['secret'],
-                                $nReqUrl, $nReqParams);
+                                $reqUrl, $reqParams);
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+        $rsp = $this->GetQueryResponse($reqUrl, $prm);
 
         $doc = new SimpleXMLElement($rsp);
         $this->ErrorCheck($doc);
@@ -150,45 +158,37 @@ class FatSecretAPI
     // Get Weight Entries
     function WeightGetMonth()
     {
-//      $url = API_REST . 'method=weights.get_month';
-        $url = API_REST . 'method=foods.get_recently_eaten';
+        $url = API_REST . 'method=weights.get_month';
         
-//      $token = $_SESSION['token'];
-//      $secret = $_SESSION['secret'];
-        $username = $_SESSION['username'];
-        $token;
-        $secret;
-	try {
-            $this->ProfileGetAuth($username, $token, $secret);
-	}
-	catch(FatSecretException $ex) {
-            apologize("Unable to get FS authorization for " . $username . "! "
-                    . "Error: " . $ex->getCode() . " - " . $ex->getMessage(), $url);
-	}
+        $token = $_SESSION['token'];
+        $secret = $_SESSION['secret'];
 
         $oauth = new OAuthBase();
 
-        $nReqUrl;
-        $nReqParams;
+/*
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
-                                $token, $secret, $nReqUrl, $nReqParams);
+                                $token, $secret, $reqUrl, $reqParams);
+        $reqParams = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+$this->DisplayString("query",$reqUrl . '?' . $reqParams);
+*/
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$nReqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret, $token, $secret, $reqUrl);
+$this->DisplayString("query",$reqUrl . '?' . $reqParams);
 
+        $response = $this->GetQueryResponse($reqUrl, $reqParams);
 print 'query response';
-var_dump($rsp);
+var_dump($response);
 
-        $doc = new SimpleXMLElement($rsp);
-        $this->ErrorCheck($doc);
-
+        $result = new SimpleXMLElement($response);
+        $this->ErrorCheck($result);
 print 'weight log';
-var_dump($doc);
+var_dump($result);
 exit;
 
-        return $doc;
+        return $result;
     }
 
     // Get Food Entries
@@ -201,15 +201,15 @@ exit;
 
         $oauth = new OAuthBase();
 
-        $nReqUrl;
-        $nReqParams;
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
-                                $token, $secret, $nReqUrl, $nReqParams);
+                                $token, $secret, $reqUrl, $reqParams);
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$nReqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+$this->DisplayString("query",$reqUrl . '?' . $prm);
+        $rsp = $this->GetQueryResponse($reqUrl, $prm);
 
 print 'query response';
 var_dump($rsp);
@@ -235,16 +235,16 @@ exit;
 
         $oauth = new OAuthBase();
 
-        $nReqUrl;
-        $nReqParams;
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
-                                null, null, $nReqUrl, $nReqParams);
-//                              $token, $secret, $nReqUrl, $nReqParams);
+                                null, null, $reqUrl, $reqParams);
+//                              $token, $secret, $reqUrl, $reqParams);
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$nReqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+$this->DisplayString("query",$reqUrl . '?' . $prm);
+        $rsp = $this->GetQueryResponse($reqUrl, $prm);
 
 print 'query response';
 var_dump($rsp);
@@ -273,15 +273,15 @@ exit;
 
         $oauth = new OAuthBase();
 
-        $nReqUrl;
-        $nReqParams;
+        $reqUrl;
+        $reqParams;
         $signature = $oauth->GenerateSignature($url,
                                 $this->_consumerKey, $this->_consumerSecret,
-                                $token, $secret, $nReqUrl, $nReqParams);
+                                $token, $secret, $reqUrl, $reqParams);
 
-        $prm = (string)$nReqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$nReqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($nReqUrl, $prm);
+        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+$this->DisplayString("query",$reqUrl . '?' . $prm);
+        $rsp = $this->GetQueryResponse($reqUrl, $prm);
 
 print 'query response';
 var_dump($rsp);
@@ -318,11 +318,10 @@ exit;
         return $response;
     }
     
-    private function ErrorCheck($doc){
+    private function ErrorCheck($doc)
+    {
         if($doc->getName() == 'error')
-        {
             throw new FatSecretException((int)$doc->code, $doc->message);
-        }
     }
 }
 
@@ -339,52 +338,60 @@ class FatSecretException extends Exception
 class OAuthBase
 {
     /* OAuth Parameters */
-    static public $OAUTH_VERSION_NUMBER = '1.0';
-    static public $OAUTH_PARAMETER_PREFIX = 'oauth_';
-    static public $XOAUTH_PARAMETER_PREFIX = 'xoauth_';
+    static public $OAUTH_VERSION_NUMBER        = '1.0';
+    static public $OAUTH_PARAMETER_PREFIX      = 'oauth_';
+    static public $XOAUTH_PARAMETER_PREFIX     = 'xoauth_';
     static public $PEN_SOCIAL_PARAMETER_PREFIX = 'opensocial_';
 
-    static public $OAUTH_CONSUMER_KEY = 'oauth_consumer_key';
-    static public $OAUTH_CALLBACK = 'oauth_callback';
-    static public $OAUTH_VERSION = 'oauth_version';
+    static public $OAUTH_CONSUMER_KEY     = 'oauth_consumer_key';
+    static public $OAUTH_CALLBACK         = 'oauth_callback';
+    static public $OAUTH_VERSION          = 'oauth_version';
     static public $OAUTH_SIGNATURE_METHOD = 'oauth_signature_method';
-    static public $OAUTH_SIGNATURE = 'oauth_signature';
-    static public $OAUTH_TIMESTAMP = 'oauth_timestamp';
-    static public $OAUTH_NONCE = 'oauth_nonce';
-    static public $OAUTH_TOKEN = 'oauth_token';
-    static public $OAUTH_TOKEN_SECRET = 'oauth_token_secret';
+    static public $OAUTH_SIGNATURE        = 'oauth_signature';
+    static public $OAUTH_TIMESTAMP        = 'oauth_timestamp';
+    static public $OAUTH_NONCE            = 'oauth_nonce';
+    static public $OAUTH_TOKEN            = 'oauth_token';
+    static public $OAUTH_TOKEN_SECRET     = 'oauth_token_secret';
     
     protected $unreservedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~';
     
-    function GenerateSignature($url, $cKey, $cSecret, $uToken, $uSecret, &$nReqUrl, &$nReqParams)
+    function BuildRequestParams($url, $cKey, $cSecret, $uToken, $uSecret, &$reqUrl)
     {
-        $signatureBase = $this->GenerateSignatureBase($url, $cKey, $uToken, $nReqUrl, $nReqParams);
+        $reqParams;
+        $signature = $this->GenerateSignature($url,
+                                $cKey, $cSecret, $uToken, $uSecret, $reqUrl, $reqParams);
+        $reqParams = $reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
+        return $reqParams;
+    }
+
+    function GenerateSignature($url, $cKey, $cSecret, $uToken, $uSecret, &$reqUrl, &$reqParams)
+    {
+        $signatureBase = $this->GenerateSignatureBase($url, $cKey, $uToken, $reqUrl, $reqParams);
         $secretKey = $this->UrlEncode($cSecret) . '&' . $this->UrlEncode($uSecret);
         return base64_encode(hash_hmac('sha1', $signatureBase, $secretKey, true));
     }
     
-    private function GenerateSignatureBase($url, $cKey, $token, &$nReqUrl, &$nReqParams){		
-        $parameters = [];
-
+    private function GenerateSignatureBase($url, $cKey, $token, &$reqUrl, &$reqParams){		
         $elements = explode('?', $url);
         $parameters = $this->GetQueryParameters($elements[1]);
 
-        $parameters[OAuthBase::$OAUTH_VERSION] = OAuthBase::$OAUTH_VERSION_NUMBER;
-        $parameters[OAuthBase::$OAUTH_NONCE] = $this->GenerateNonce();
-        $parameters[OAuthBase::$OAUTH_TIMESTAMP] = $this->GenerateTimeStamp();
+        $parameters[OAuthBase::$OAUTH_VERSION]          = OAuthBase::$OAUTH_VERSION_NUMBER;
+        $parameters[OAuthBase::$OAUTH_NONCE]            = $this->GenerateNonce();
+        $parameters[OAuthBase::$OAUTH_TIMESTAMP]        = $this->GenerateTimeStamp();
         $parameters[OAuthBase::$OAUTH_SIGNATURE_METHOD] = 'HMAC-SHA1';
-        $parameters[OAuthBase::$OAUTH_CONSUMER_KEY] = $cKey;
+        $parameters[OAuthBase::$OAUTH_CONSUMER_KEY]     = $cKey;
 
         if(!empty($token))
-            $parameters[OAuthBase::$OAUTH_TOKEN] = $token;
+            $parameters[OAuthBase::$OAUTH_TOKEN]        = $token;
 
-        $nReqUrl = $elements[0];
-        $nReqParams = $this->NormalizeRequestParameters($parameters);
+        $reqUrl = $elements[0];
+        $reqParams = $this->NormalizeRequestParameters($parameters);
 
-        return 'POST&' . UrlEncode($nReqUrl) . '&' . UrlEncode($nReqParams);
+        return 'POST&' . UrlEncode($reqUrl) . '&' . UrlEncode($reqParams);
     }
-        
-    private function GetQueryParameters($paramString) {
+
+    private function GetQueryParameters($paramString)
+    {
         $elements = explode('&',$paramString);
         $result = [];
         foreach ($elements as $element)
@@ -392,23 +399,23 @@ class OAuthBase
             list($key,$token) = explode('=',$element);
             if($token)
                 $token = urldecode($token);
-            if(empty($result[$key])) {
+            if(empty($result[$key]))
                 $result[$key] = $token;
-            } else if (!is_array($result[$key])) {
+            else if (!is_array($result[$key]))
                 $result[$key] = [ $result[$key], $token ];
-            } else {
+            else
                 $result[$key][] = $token;
-            }
         }
 
         return $result;
     }
 
     private function NormalizeRequestParameters($parameters) {
-        $elements = [];
         ksort($parameters);
 
-        foreach ($parameters as $paramName=>$paramValue) {
+        $elements = [];
+        foreach ($parameters as $paramName=>$paramValue)
+        {
             $elements[] = $this->UrlEncode($paramName) . '=' . $this->UrlEncode($paramValue);
         }
         return implode('&',$elements);

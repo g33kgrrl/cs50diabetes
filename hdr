@@ -1,19 +1,10 @@
-<?php
-
     /*******************************\
     *                               *
-    * index.php                     *
+    * config.php                    *
     *                               *
     * Computer Science 50           *
     * Final Project                 *
     *                               *
-    * Main page.                    *
+    * Configures pages.             *
     *                               *
     \*******************************/
-
-    // configuration
-    require("../includes/config.php"); 
-
-    // render bglog
-    render("{$_SESSION['fname']} {$_SESSION['lname']}", "menu.php");
-?>
