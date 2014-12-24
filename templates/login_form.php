@@ -1,4 +1,4 @@
-<form action="login.php" method="post">
+<form action="login.php" method="POST">
     <fieldset>
         <div class="form-group">
             <input autofocus class="form-control" required name="username"
@@ -11,8 +11,8 @@
         <div class="form-group">
             <button type="submit" class="btn btn-default">Log In</button>
         </div>
+        <div>
+            OR <a href="register.php">Register</a> for an account
+        </div>
     </fieldset>
 </form>
-<div>
-    OR <a href="register.php">Register</a> for an account
-</div>

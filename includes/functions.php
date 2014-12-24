@@ -5,7 +5,7 @@
     * functions.php                 *
     *                               *
     * Computer Science 50           *
-    * Problem Set 7                 *
+    * Final Project                 *
     *                               *
     * Helper functions.             *
     *                               *
@@ -38,17 +38,39 @@
         }
         else
         {
-            render(null, "apology.php", [ "message" => $message ],
+            render(null, "apology.php", [ "message" => $message ], true,
                          $againurl, "Try Again");
         }
         exit;
     }
 
     // Facilitates debugging by dumping contents of variable to display
-    function dump($variable)
+    function dump($title,$variable)
     {
         require("../templates/dump.php");
         exit;
+    }
+
+    // make a noun possessive
+    function possessive($str)
+    {
+        if (strtolower(substr($str,-1)) === 's')
+            return $str . '\'';
+        return $str . '\'s';
+    }
+
+    function makeusertitle($pre,$last,$post)
+    {
+        $name = $_SESSION['fname'];
+        if ($last === true)
+            $name = $name . ' ' . $_SESSION['lname'];
+        $title = '';
+        if ($pre !== null)
+            $title = $pre . ' ';
+        $title = $title . possessive($name);
+        if ($post !== null)
+            $title = $title . ' ' . $post;
+        return $title;
     }
 
     // Logs out current user, if any.  Based on Example #1 at
@@ -66,65 +88,6 @@
 
         // destroy session
         session_destroy();
-    }
-
-    // Returns a stock by symbol (case-insensitively) else false if not found.
-    function lookup($symbol)
-    {
-        // reject symbols that start with ^
-        if (preg_match("/^\^/", $symbol))
-        {
-            return false;
-        }
-
-        // reject symbols that contain commas
-        if (preg_match("/,/", $symbol))
-        {
-            return false;
-        }
-
-        // open connection to Yahoo
-        $handle = @fopen("http://download.finance.yahoo.com/d/" .
-                         "quotes.csv?f=snl1&s=$symbol", 'r');
-        if ($handle === false)
-        {
-            // trigger (big, orange) error
-            trigger_error("Could not connect to Yahoo!", E_USER_ERROR);
-            exit;
-        }
-
-        // download first line of CSV file
-        $data = fgetcsv($handle);
-        if ($data === false  ||  count($data) == 1)
-        {
-            return false;
-        }
-
-        // close connection to Yahoo
-        fclose($handle);
-
-        // ensure symbol was found
-        if ($data[2] === "0.00")
-        {
-            return false;
-        }
-
-        // return stock as an associative array
-        return [ "symbol" => $data[0],
-                 "name"   => $data[1],
-                 "price"  => $data[2] ];
-    }
-
-
-    // Returns a the CURRENT price of a stock (by symbol)
-    function getprice($symbol)
-    {
-        $s = lookup($symbol);
-        if ($s === false)
-        {
-            apologize("($symbol) is NOT a valid stock symbol!");
-        }
-        return $s['price'];
     }
 
     // Executes SQL statement, possibly with parameters, returning
@@ -149,7 +112,7 @@
 
                 // ensure that PDO::prepare returns false when passed
                 //   invalid SQL
-                $handle->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); 
+                $handle->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             }
             catch (Exception $e)
             {
@@ -180,102 +143,6 @@
         {
             return false;
         }
-    }
-
-    // Redirects user to destination, which can be a URL or a relative path on
-    //   the local host.
-    // Because this function outputs an HTTP header, it must be called before
-    //   caller outputs any HTML.
-    function redirect($destination)
-    {
-        // handle URL
-        if (preg_match("/^https?:\/\//", $destination))
-        {
-            header("Location: " . $destination);
-        }
-
-        // handle absolute path
-        else if (preg_match("/^\//", $destination))
-        {
-            $protocol = (isset($_SERVER["HTTPS"])) ? "https" : "http";
-            $host = $_SERVER["HTTP_HOST"];
-            header("Location: $protocol://$host$destination");
-        }
-
-        // handle relative path
-        else
-        {
-            // adapted from http://www.php.net/header
-            $protocol = (isset($_SERVER["HTTPS"])) ? "https" : "http";
-            $host = $_SERVER["HTTP_HOST"];
-            $path = rtrim(dirname($_SERVER["PHP_SELF"]), "/\\");
-            header("Location: $protocol://$host$path/$destination");
-        }
-
-        // exit immediately since we're redirecting anyway
-        exit;
-    }
-
-    // Renders template, passing in values.
-    function render($title, $template, $values = [], $link=null, $linkmsg=null)
-    {
-        // if template exists, render it
-        if (file_exists("../templates/$template"))
-        {
-            // extract variables into local scope
-            extract($values);
-
-            // render header
-            require("../templates/header.php");
-
-            // render middle (i.e., body)
-            print "<div id=\"middle\">\n";
-            // render template
-            require("../templates/$template");
-            // render link, if specified
-            if ($link !== null)
-            {
-                if ($linkmsg === null)
-                {
-                    $linkmsg = $link;
-                }
-                print "  <br/>\n";
-                print "  <p class=\"medium\">\n";
-                print "    <a href=\"$link\">$linkmsg</a>\n";
-                print "  </p>\n";
-                print "  <br/>\n";
-            }
-            print "</div>\n";
-
-            // render footer
-            require("../templates/footer.php");
-        }
-
-        // else err
-        else
-        {
-            trigger_error("Invalid template: $template", E_USER_ERROR);
-        }
-    }
-
-    // Reads a user's full portfolio
-    function read_portfolio($id)
-    {
-        // Query database for user
-        $stocks = query("SELECT * FROM portfolio WHERE id = ?", $id);
-        $portfolio = [];
-        foreach ($stocks as $stock)
-        {
-            $s = lookup($stock['symbol']);
-            if ($s === false)
-            {
-                apologize($stock['symbol'] . " is NOT a valid stock symbol!");
-            }
-            $portfolio[] = [ 'symbol' => $s['symbol'],
-                             'name'   => $s['name'],
-                             'shares' => $stock['shares'] ];
-        }
-        return $portfolio;
     }
 
     // Write a record to the history
@@ -310,25 +177,25 @@
     function load_bgLog()
     {
         $bgLog = [];
-        
+
         $entries = query("SELECT * FROM bglog WHERE id = ?", $_SESSION["id"]);
-    
+
         foreach ($entries as $entry)
-        {       
+        {
             $phpTimestamp = strtotime($entry["timestamp"]);
-            
+
             $testDate = date("m-d-y", $phpTimestamp);
-            
+
             $bgLog[$testDate][] = [
-                "dbTimestamp" => $entry["timestamp"],
+                "dbTimestamp"  => $entry["timestamp"],
                 "phpTimestamp" => $phpTimestamp,
-                "date" => $testDate,
-                "time" => date("g:i a", $phpTimestamp),
-                "mealtime" => $entry["mealtime"],
-                "reading" => $entry["reading"],                
+                "date"         => $testDate,
+                "time"         => date("g:i a", $phpTimestamp),
+                "mealtime"     => $entry["mealtime"],
+                "reading"      => $entry["reading"],
             ];
-        }   
-                        
+        }
+
         return $bgLog;
     }
 
@@ -336,38 +203,128 @@
      * Calculate user's daily average blood glucose
      */
     function load_bgDailyAvg($entries)
-    {           
-        $bgDailyAvg = array_sum(array_column($entries, 'reading'));
-        
-        $bgDailyAvg = round($bgDailyAvg/count($entries));
-                        
+    {
+        $bgDailyAvg = round(array_sum(array_column($entries, 'reading')) / count($entries), 1);
+
         return $bgDailyAvg;
     }
-    
+
     /**
      * Calculate user's average blood glucose at each mealtime
      */
     function load_bgMealtimeAvgs()
-    {           
+    {
         $bgMealtimeAvgs = [];
         $entries = [];
-        $mealtimes = ['F', 'BB', 'AB', 'BL', 'AL', 'BD', 'AD', 'R'];
-        
+        $mealtimes = ['F', 'BB', 'AB', 'BL', 'AL', 'BD', 'AD', 'B', 'R'];
+
+        $total = 0;
+        $totcnt = 0;
         foreach ($mealtimes as $mealtime)
         {
             $entries = query("SELECT reading FROM bglog WHERE id = ? AND mealtime = ?", $_SESSION["id"], $mealtime);
-            
-            $bgMealtimeAvg = array_sum(array_column($entries, 'reading'));
-        
-            $bgMealtimeAvg = round($bgMealtimeAvg/count($entries));                 
-            
-            $bgMealtimeAvgs[$mealtime] = $bgMealtimeAvg;
+
+            $cnt = count($entries);
+            $totcnt += $cnt;
+            if ($cnt === 0)
+            {
+                $bgMealtimeAvgs[$mealtime] = '--';
+            }
+            else
+            {
+                $sum = array_sum(array_column($entries, 'reading'));
+                $total += $sum;
+                $bgMealtimeAvgs[$mealtime] = number_format(round($sum / $cnt, 1), 1);
+            }
+
         }
-        
-        $bgMealtimeAvgs['ALL'] = round((array_sum($bgMealtimeAvgs)/count($bgMealtimeAvgs)));
-                 
+
+        if ($totcnt === 0)
+        {
+            $bgMealtimeAvgs['ALL'] = '--';
+        }
+        else
+        {
+            $bgMealtimeAvgs['ALL'] = round($total / $totcnt, 1);
+        }
+
         return $bgMealtimeAvgs;
     }
-    
-    
+
+    // Redirects user to destination, which can be a URL or a relative path on
+    //   the local host.
+    // Because this function outputs an HTTP header, it must be called before
+    //   caller outputs any HTML.
+    function redirect($destination)
+    {
+        // handle URL
+        if (preg_match("/^https?:\/\//", $destination))
+        {
+            $hdr = $destination;
+        }
+
+        // handle absolute path
+        else if (preg_match("/^\//", $destination))
+        {
+            $protocol = (isset($_SERVER["HTTPS"])) ? "https" : "http";
+            $host = $_SERVER["HTTP_HOST"];
+            $hdr = $protocol . '://' . $host . $destination;
+        }
+
+        // handle relative path
+        else
+        {
+            // adapted from http://www.php.net/header
+            $protocol = (isset($_SERVER["HTTPS"])) ? "https" : "http";
+            $host = $_SERVER["HTTP_HOST"];
+            $path = rtrim(dirname($_SERVER["PHP_SELF"]), "/\\");
+            $hdr = $protocol . '://' . $host . $path . '/' . $destination;
+        }
+
+        header("Location: " . $hdr);
+
+        // exit immediately since we're redirecting anyway
+        exit;
+    }
+
+    // Renders template, passing in values.
+    function render($title, $template, $values=[], $suppressFS=false, $link=null, $linkmsg=null)
+    {
+        // if template does not exist, error
+        if (!file_exists("../templates/$template"))
+        {
+            trigger_error("Invalid template: $template", E_USER_ERROR);
+        }
+        // else render it
+        else
+        {
+            // extract variables into local scope
+            extract($values);
+
+            // render header
+            require("../templates/header.php");
+
+            // render middle (i.e., body)
+            print '<div id="middle">' . "\n";
+            // render template
+            require("../templates/$template");
+            print "</div>\n";
+
+            // render link, if specified
+            if ($link !== null)
+            {
+                print "<div>\n";
+                if ($linkmsg === null)
+                {
+                    $linkmsg = $link;
+                }
+                print '<div><br/><p class="medium"><a href="'.$link.'">'.$linkmsg."</a></p><br/></div>\n";
+            }
+
+            // render footer
+            require("../templates/footer.php");
+        }
+
+    }
+
 ?>

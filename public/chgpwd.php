@@ -38,13 +38,13 @@
             apologize("Invalid password!", $chgurl);
         }
 
-        // redirect to portfolio
+        // redirect to index
         redirect("/");
     }
     else
     {
         // else render form
-        render("Change Password", "chgpwd_form.php");
+        render(makeusertitle("Change",false,"Password"), "chgpwd_form.php", [], true);
     }
 
 ?>

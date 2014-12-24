@@ -136,37 +136,6 @@
     // else render form
     else
     {
-        /* $portfolio = $_SESSION['portfolio'];
-        $skip = false;
-        $lastsym = $_SESSION['lastsym'];
-        if ($lastsym === null)
-            $skip = true;
-        $total_shares = 0;
-        $total_value = 0;
-        $idx = 0;
-        foreach ($portfolio as $stock)
-        {
-            if ($lastsym == $stock['symbol'])
-                $skip = true;
-            $symbol = $stock['symbol'];
-            $shares = $stock['shares'];
-            $total_shares += $shares;
-            $price  = getprice($symbol);
-            $value  = $shares * $price;
-            $total_value += $value;
-            $portfolio[$idx]['price'] = $price;
-            $portfolio[$idx]['value'] = $value;
-            $idx++;
-        }
-        if (!$skip)
-        {
-            $stock = lookup($lastsym);
-            $portfolio[] = [ 'symbol' => $stock['symbol'],
-                             'name'   => $stock['name'],
-                             'price'  => $stock['price'],
-                             'shares' => null ];
-        } */
-
-        render("Blood Glucose", "bg_form.php");
+        render(makeusertitle("Enter",false,"Blood Glucose"), "bg_form.php", [], true);
     }
 ?>
