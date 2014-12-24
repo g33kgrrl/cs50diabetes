@@ -9,6 +9,14 @@
                    placeholder="Username" type="text" />
         </div>
         <div class="form-group">
+            <input autofocus class="form-control" required name="fname"
+                   placeholder="First name" type="text" />
+        </div>
+        <div class="form-group">
+            <input autofocus class="form-control" required name="lname"
+                   placeholder="Last name" type="text" />
+        </div>
+        <div class="form-group">
             <input class="form-control" required name="password"
                    placeholder="Password" type="password" />
         </div>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-
-
+	
 <html lang="en">
 
     <head>
@@ -11,22 +10,31 @@
         <link href="/css/styles.css" rel="stylesheet"/>
 
         <?php if (isset($title)) { ?>
-            <title>C$50 Finance: <?=htmlspecialchars($title)?></title>
+            <title><?=APPLICATION?>: <?=htmlspecialchars($title)?></title>
         <?php } else { ?>
-            <title>C$50 Finance</title>
+            <title><?=APPLICATION?></title>
         <?php } ?>
 
         <script src="/js/jquery-1.10.2.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/scripts.js"></script>
-
     </head>
 
     <body>
-        <div class="container">
-            <div id="top">
-                <a href="/"><img alt="CS50 Diabetes" src="/img/logo.gif"/></a>
+        <div class="container"><br/>
+            <div id="top" class="bigblue">
+                <a href="/"><?=APPLICATION?></a><br/>
             </div>
-            <!-- <div style="width:500px;margin:0 auto;float:right;">
-                <script src="http://platform.fatsecret.com/js?key=caf512af2ef74757be53df253b10601d&auto_load=true"></script>
-            </div> -->
+<?php
+    if (!empty($_SESSION['id']))
+    {
+        if ($suppressFS === false)
+        {
+?>
+            <div style="width: 560px; margin: 0 auto; float: right;">
+                <script src="<?=API_LOAD?>key=<?=API_KEY?>&amp;auto_load=true&amp;theme=blue_small"></script>
+            </div>
+<?php
+        }
+    }
+?>

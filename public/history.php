@@ -32,7 +32,7 @@
     }
 
     // render portfolio
-    render("{$_SESSION['username']}'s History", "history_disp.php",
+    render(makeusertitle(null,false,"History", "history_disp.php",
            [ 'history'      => $history,
              'net_volume'   => $net_volume,
              'total_shares' => $total_shares ] );

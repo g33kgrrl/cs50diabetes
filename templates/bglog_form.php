@@ -1,5 +1,5 @@
 <div class="twoCols">
-    <h2><?= $_SESSION["username"] . "'s Blood Glucose Log" ?></h2>
+    <h2><?=$title?></h2>
     
     <?php foreach ($bgLog as $testDate => $entries): ?>
     <?php $bgDailyAvg = load_bgDailyAvg($bgLog[$testDate]); ?>
@@ -26,7 +26,7 @@
  
             <tr class="ALL">
                 <td colspan="2">Average</td>
-                <td><?= $bgDailyAvg ?></td>
+                <td><?= number_format($bgDailyAvg, 1) ?></td>
             </tr>          
 
         </tbody>

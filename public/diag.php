@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 
-<?php
-    // configuration
-    require("../includes/config.php"); 
-?>
-
 <html lang="en">
 
     <head>

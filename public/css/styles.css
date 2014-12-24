@@ -1,11 +1,13 @@
-/**
- * styles.css
- *
- * Computer Science 50
- * Project
- *
- * Global CSS.
- */
+/***************************\
+*                           *
+* styles.css                *
+*                           *
+* Computer Science 50       *
+* Final Project             *
+*                           *
+* Global CSS                *
+*                           *
+\***************************/
 
 .container
 {
@@ -216,6 +218,14 @@ footer
     color: darkred;
 }
 
+.bigblue
+{
+    font-size: 250%;
+    text-decoration: underline;
+    font-weight: bold;
+    color: blue;
+}
+
 .dkblue
 {
     color: darkblue;
@@ -276,6 +286,11 @@ footer
 .AD
 {
     background-color: #99e599;
+}
+
+.R
+{
+    background-color: #e000e0;
 }
 
 .R
