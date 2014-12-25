@@ -204,7 +204,7 @@
      */
     function load_bgDailyAvg($entries)
     {
-        $bgDailyAvg = round(array_sum(array_column($entries, 'reading')) / count($entries), 1);
+        $bgDailyAvg = number_format(round(array_sum(array_column($entries, 'reading')) / count($entries), 1), 1);
 
         return $bgDailyAvg;
     }
@@ -245,7 +245,7 @@
         }
         else
         {
-            $bgMealtimeAvgs['ALL'] = round($total / $totcnt, 1);
+            $bgMealtimeAvgs['ALL'] = number_format(round($total / $totcnt, 1), 1);
         }
 
         return $bgMealtimeAvgs;

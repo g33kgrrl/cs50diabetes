@@ -1,3 +1,19 @@
+<?php
+
+/*******************************\
+*                               *
+* chgpwd_form.php               *
+*                               *
+* Computer Science 50           *
+* Final Project                 *
+*                               *
+* Renders the Change Password   *
+*   form.                       *
+*                               *
+\*******************************/
+
+?>
+
 <form action="chgpwd.php" method="post">
     <div id="heading">
         <h1>Change Password</h1>

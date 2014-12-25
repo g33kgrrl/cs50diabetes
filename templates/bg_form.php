@@ -1,3 +1,18 @@
+<?php
+
+    /*******************************\
+    *                               *
+    * bg_form.php                   *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Renders the Enter BG form.    *
+    *                               *
+    \*******************************/
+
+?>
+
 <div>
     <h2><?= $_SESSION["username"] . "'s Blood Glucose" ?></h2>
 
@@ -42,4 +57,3 @@
         </fieldset>
     </form>
 </div>
-

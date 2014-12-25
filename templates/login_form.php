@@ -1,3 +1,18 @@
+<?php
+
+/*******************************\
+*                               *
+* login_form.php                *
+*                               *
+* Computer Science 50           *
+* Final Project                 *
+*                               *
+* Render the login form.        *
+*                               *
+\*******************************/
+
+?>
+
 <form action="login.php" method="POST">
     <fieldset>
         <div class="form-group">

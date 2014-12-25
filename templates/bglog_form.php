@@ -1,6 +1,21 @@
+<?php
+
+    /*******************************\
+    *                               *
+    * bglog_form.php                *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Renders the BG Log screen.    *
+    *                               *
+    \*******************************/
+
+?>
+
 <div class="twoCols">
     <h2><?=$title?></h2>
-    
+
     <?php foreach ($bgLog as $testDate => $entries): ?>
     <?php $bgDailyAvg = load_bgDailyAvg($bgLog[$testDate]); ?>
     <table>
@@ -12,22 +27,22 @@
                 <th>Reading</th>
             </tr>
         </thead>
-        <tbody> 
-        
+        <tbody>
+
             <?php foreach ($entries as $entry): ?>
 
             <tr class="<?= $entry["mealtime"] ?>">
                 <td><?= $entry["time"] ?></td>
                 <td><?= $entry["mealtime"] ?></td>
-                <td><?= $entry["reading"] ?></td> 
-            </tr> 
+                <td><?= $entry["reading"] ?></td>
+            </tr>
 
             <?php endforeach ?>
- 
+
             <tr class="ALL">
                 <td colspan="2">Average</td>
-                <td><?= number_format($bgDailyAvg, 1) ?></td>
-            </tr>          
+                <td><?= $bgDailyAvg ?></td>
+            </tr>
 
         </tbody>
     </table>
@@ -47,7 +62,7 @@
             </tr>
         </thead>
         <tbody>
-        
+
             <?php foreach ($bgMealtimeAvgs as $bgMealtimeAvg => $value): ?>
 
             <tr class="<?= $bgMealtimeAvg ?>">
@@ -56,6 +71,5 @@
             </tr>
             <?php endforeach ?>
         </tbody>
-    </table>    
+    </table>
 </div>
-

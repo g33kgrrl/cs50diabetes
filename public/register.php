@@ -23,21 +23,32 @@
             apologize("Password confirmation failed!", $regurl);
         }
 
-	try {
+        $token;
+        $secret;
+	try
+        {
 	    $FS->ProfileCreate($username, $token, $secret);
 	}
-	catch(Exception $ex) {
+	catch(Exception $ex)
+        {
 // Uncomment these lines to reconnect a new CS50 Diabetes user to an existing FatSecret user
-//          if ($ex->GetCode() != 106) {
+            if ($ex->GetCode() != 106) {
                 $FS->Apologize("Unable to create FS profile!", $ex, $regurl);
-//          }
+            }
 	}
+print "token:";
+var_dump($token);
+
+        $token2;
+        $secret2;
 	try {
             $FS->ProfileGetAuth($username, $token2, $secret2);
 	}
 	catch(FatSecretException $ex) {
             $FS->Apologize("Unable to authorize FS profile!",$ex,$regurl);
 	}
+print "token2:";
+var_dump($token2);
         if ((string)$token !== (string)$token2)
         {
             apologize("FS token syncronization error: " .
@@ -62,12 +73,12 @@
         // If registration succeeded, stay logged-in
         $users = query("SELECT * FROM users WHERE username = ?", $username);
         $user = $users[0];
-        $_SESSION['id']        = $user['id'];
-        $_SESSION['username']  = $user['username'];
-        $_SESSION['token']     = (string)$token2;
-        $_SESSION['secret']    = (string)$secret2;
-        $_SESSION['fname']     = $user['fname'];
-        $_SESSION['lname']     = $user['lname'];
+        $_SESSION['id']       = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['token']    = (string)$token2;
+        $_SESSION['secret']   = (string)$secret2;
+        $_SESSION['fname']    = $user['fname'];
+        $_SESSION['lname']    = $user['lname'];
 
         // redirect to index
         redirect("/");
