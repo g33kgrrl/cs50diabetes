@@ -1,3 +1,18 @@
+<?php
+
+/*******************************\
+*                               *
+* register_form.php             *
+*                               *
+* Computer Science 50           *
+* Final Project                 *
+*                               *
+* Render the Register form.     *
+*                               *
+\*******************************/
+
+?>
+
 <form action="register.php" method="post">
     <div id="heading">
         <h1>Register as a new user</h1>

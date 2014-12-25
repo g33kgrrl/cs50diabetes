@@ -1,3 +1,18 @@
+<?php
+
+    /*******************************\
+    *                               *
+    * apology.php                   *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Renders Apology screen.       *
+    *                               *
+    \*******************************/
+
+?>
+
 <p class="lead text-danger">
     <img alt="Sorry!" src="/img/Sorry.jpg" width=200 />
 </p>

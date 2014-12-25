@@ -1,3 +1,18 @@
+<?php
+
+    /*******************************\
+    *                               *
+    * bg_form.php                   *
+    *                               *
+    * Computer Science 50           *
+    * Final Project                 *
+    *                               *
+    * Renders the Enter BG form.    *
+    *                               *
+    \*******************************/
+
+?>
+
 <div>
 
 

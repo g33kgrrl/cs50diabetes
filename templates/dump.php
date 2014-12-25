@@ -1,3 +1,18 @@
+<?php
+
+/*******************************\
+*                               *
+* dump.php                      *
+*                               *
+* Computer Science 50           *
+* Final Project                 *
+*                               *
+* Dump a variable.              *
+*                               *
+\*******************************/
+
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
