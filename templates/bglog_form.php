@@ -30,11 +30,28 @@
         <tbody>
 
             <?php foreach ($entries as $entry): ?>
+            
+<?
+            $bgLevel = "";
+            $bgAlert = "";            
+            
+            if ($entry["reading"] < 70)
+            {
+                $bgLevel = "bgLow";
+                $bgAlert = " LOW";
+            }
+            elseif ($entry["reading"] >= 140 || ($entry["reading"] >= 110 && ($entry["mealtime"] == 'F' || $entry["mealtime"] == "BB" || $entry["mealtime"] == "BL" || $entry["mealtime"] == "BD")))
+            {
+                $bgLevel = "bgHigh";
+                $bgAlert = " HIGH";
+            }
+            
+?>
 
-            <tr class="<?= $entry["mealtime"] ?>">
+            <tr class="<?= $entry['mealtime'] . " " . $bgLevel ?>">
                 <td><?= $entry["time"] ?></td>
                 <td><?= $entry["mealtime"] ?></td>
-                <td><?= $entry["reading"] ?></td>
+                <td><?= $entry["reading"] . $bgAlert ?></td>
             </tr>
 
             <?php endforeach ?>
