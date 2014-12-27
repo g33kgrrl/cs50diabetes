@@ -13,6 +13,7 @@
 \*******************************/
 
 ?>
+        </div>
 
         <div>
             <footer>
@@ -47,7 +48,7 @@
               if (!empty($_SESSION['id']))
               {
 ?>
-                <p class="small">
+                <p class="small center">
                     (logged in as <?=htmlspecialchars($_SESSION['username'])?> [id=<?=$_SESSION['id']?>])<br/>
                 </p>
 <?php

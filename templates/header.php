@@ -36,7 +36,7 @@
     </head>
 
     <body>
-        <div class="container">
+        <div class="center">
 
             <?php
                 if (!empty($_SESSION['id']))
@@ -66,3 +66,5 @@
             <?php
                 }
             ?>
+            
+            <div class="container center">
