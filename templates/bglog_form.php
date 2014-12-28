@@ -29,12 +29,19 @@
         </thead>
         <tbody>
 
-            <?php foreach ($entries as $entry): ?>
+<?php 
+            $beforeMeal;
+            $meal = "";
+            $bgSpan;
+?>
+
+            <? foreach ($entries as $entry): ?>
             
 <?
             $bgLevel = "";
             $bgAlert = "";            
             
+            // check for BG high/low and mark entry as needed
             if ($entry["reading"] < 70 && $entry["reading"] !== "--")
             {
                 $bgLevel = "bgLow";
@@ -44,15 +51,37 @@
                                                     ($entry["mealtime"] == 'F'  || 
                                                      $entry["mealtime"] == "BB" || 
                                                      $entry["mealtime"] == "BL" || 
-                                                     $entry["mealtime"] == "BD"
-                                                    )
-                                                )
-                   )
+                                                     $entry["mealtime"] == "BD")))
             {
                 $bgLevel = "bgHigh";
                 $bgAlert = " H";
             }
-            
+
+            // check for high mealtime BG span and mark after-meal entry if too high
+            if ($entry["mealtime"] === "BB" ||
+                $entry["mealtime"] === "BL" ||
+                $entry["mealtime"] === "BD")
+            {
+                $beforeMeal = $entry["reading"];
+                $meal = substr($entry["mealtime"], -1);
+            }
+            elseif ($entry["mealtime"] === "AB" ||
+                    $entry["mealtime"] === "AL" ||
+                    $entry["mealtime"] === "AD")
+            {
+                if (substr($entry["mealtime"], -1) === $meal && 
+                    $entry["reading"]              !== "--" && 
+                    $beforeMeal                    !== "--")
+                {
+                    $bgSpan = $entry["reading"] - $beforeMeal;
+                    
+                    if ($bgSpan > 40)
+                    {
+                        $bgLevel = "bgHigh";
+                        $bgAlert .= " S";
+                    }
+                }
+            }
 ?>
 
             <tr class="<?= $entry['mealtime'] . " " . $bgLevel ?>">
@@ -161,7 +190,7 @@
                     if ($bgSpan > 40)
                     {
                         $bgLevel = "bgHigh";
-                        $bgAlert = " H";
+                        $bgAlert = " S";
                     }
                 }
 ?>
