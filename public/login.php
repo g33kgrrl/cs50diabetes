@@ -49,6 +49,8 @@
         {
             $FS->Apologize("Unable to authorize FS profile!", $ex, $url);
 	}
+        $auth = [ 'user_id' => $username, 'token' => (string)$token, 'secret' => (string)$secret ];
+        $sessionKey = $FS->ProfileRequestScriptSessionKey($auth, null, null, null, false);
 
         // log the user in, and remember that user is now logged in by storing
         //   user's ID (and all other pertinent info) in _SESSION
@@ -56,6 +58,7 @@
         $_SESSION['username'] = $username;
         $_SESSION['token']    = (string)$token;
         $_SESSION['secret']   = (string)$secret;
+        $_SESSION['sessKey']  = (string)$sessionKey;
         $_SESSION['fname']    = $user['fname'];
         $_SESSION['lname']    = $user['lname'];
 

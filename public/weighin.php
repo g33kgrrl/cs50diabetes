@@ -12,32 +12,37 @@
     \*******************************/
 
     // configuration
-    require("../includes/config.php"); 
+    require("../includes/config.php");
 
-    $stat;
-    try
+    // if form was submitted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-//      $stat = $FS->LogWeighIn(245, "First Weigh-in", 70, 210);
-        $stat = $FS->LogWeighIn(243, "One week");
+        $url = "weighin.php";
+        $curWeight = $_POST['curWeight'];
+        $comment = $_POST['comment'];
+        $height = $_POST['height'];
+        $goalWeight = $_POST['goalWeight'];
+
+        $stat;
+        try
+        {
+            $stat = $FS->LogWeighIn($curWeight,$comment,$height,$goalWeight);
+        }
+        catch(FatSecretException $ex)
+        {
+            $FS->Apologize("Unable to log weigh-in!", $ex, $url);
+        }
+
+        if (!stat)
+        {
+            apologize("Unknown failure logging weigh-in!", $url);
+        }
+
+        redirect("weightlog.php");        
     }
-    catch(FatSecretException $ex)
+    // else render form
+    else
     {
-        $FS->Apologize("Unable to get FS weight log!", $ex, "weighin.php");
+        render(makeusertitle(null,false,"Weigh-In"), "weighin_form.php", []);
     }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <meta charset="utf-8"/>
-        <title>Do Weigh-In</title>
-    </head>
-
-    <body>
-        <h1>Weigh-In</h1>
-        <pre><?php var_dump($stat); ?></pre>
-        <a href="javascript:history.go(-1);">Back</a>
-    </body>
-
-</html>

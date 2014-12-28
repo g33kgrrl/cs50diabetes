@@ -33,10 +33,6 @@
 ?>
                         <td><a href="javascript:history.go(-1);">Back</a></td>
                         <td><a href="index.php">Home</a></td>
-                        <td><a href="bg.php">Enter BG</a></td>
-                        <td><a href="bglog.php">BG Log</a></td>
-                        <td><a href="food.php">Food</a></td>
-                        <td><a href="weight.php">Weight</a></td>
                         <td><a href="chgpwd.php">Change Password</a></td>
                         <td><a href="logout.php">Log Out</a></td>
 <?php

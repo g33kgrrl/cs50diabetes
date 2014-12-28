@@ -70,6 +70,9 @@ var_dump($token2);
             apologize("Invalid username and/or password!", $regurl);
         }
 
+        $auth = [ 'user_id' => $username, 'token' => (string)$token2, 'secret' => (string)$secret2 ];
+        $sessionKey = $FS->ProfileRequestScriptSessionKey($auth, null, null, null, false);
+
         // If registration succeeded, stay logged-in
         $users = query("SELECT * FROM users WHERE username = ?", $username);
         $user = $users[0];
@@ -77,6 +80,7 @@ var_dump($token2);
         $_SESSION['username'] = $user['username'];
         $_SESSION['token']    = (string)$token2;
         $_SESSION['secret']   = (string)$secret2;
+        $_SESSION['sessKey']  = (string)$sessionKey;
         $_SESSION['fname']    = $user['fname'];
         $_SESSION['lname']    = $user['lname'];
 
