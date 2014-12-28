@@ -252,6 +252,7 @@ footer
 {
     display: inline-block;
     margin: 0 3em;
+    vertical-align: top;
 }
 
 .F
