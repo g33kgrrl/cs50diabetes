@@ -15,10 +15,10 @@
     require("../includes/config.php"); 
     $foodlog;
     try {
-        $foodlog = $FS->SearchFood("Strawberry");
+        $foodlog = $FS->FoodGetEntries();
     }
     catch(FatSecretException $ex) {
-        $FS->Apologize("Unable to get food most recently eaten!", $ex);
+        $FS->Apologize("Unable to get food entries!", $ex, "food.php");
     }
 ?>
 

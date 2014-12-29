@@ -2,17 +2,17 @@
 
     /*******************************\
     *                               *
-    * weight.php                    *
+    * weightlog.php                 *
     *                               *
     * Computer Science 50           *
     * Final Project                 *
     *                               *
-    * Get weight log.               *
+    * Display Weight Log.           *
     *                               *
     \*******************************/
 
     // configuration
-    require("../includes/config.php"); 
+    require("../includes/config.php");
 
     $weightlog;
     try
@@ -23,20 +23,10 @@
     {
         $FS->Apologize("Unable to get FS weight log!", $ex);
     }
+//  $weightLog = load_weightLog();
+
+    // Pass weight log history for rendering
+    render(makeusertitle(null,false,"Weight Log"), "weightlog_form.php",
+           [ "weightlog" => $weightlog ] );
+
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <meta charset="utf-8"/>
-        <title>Weight Log</title>
-    </head>
-
-    <body>
-        <h1>Weight Log</h1>
-        <pre><?php var_dump($weightlog); ?></pre>
-        <a href="javascript:history.go(-1);">Back</a>
-    </body>
-
-</html>

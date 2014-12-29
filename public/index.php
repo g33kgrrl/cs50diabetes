@@ -15,5 +15,5 @@
     require("../includes/config.php"); 
 
     // render bglog
-    render("{$_SESSION['fname']} {$_SESSION['lname']}", "menu.php");
+    render("{$_SESSION['firstName']} {$_SESSION['lastName']}", "mainmenu.php");
 ?>

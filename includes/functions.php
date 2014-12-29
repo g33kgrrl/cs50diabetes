@@ -61,15 +61,20 @@
 
     function makeusertitle($pre,$last,$post)
     {
-        $name = $_SESSION['fname'];
-        if ($last === true)
-            $name = $name . ' ' . $_SESSION['lname'];
         $title = '';
         if ($pre !== null)
             $title = $pre . ' ';
-        $title = $title . possessive($name);
+        $name = $_SESSION['firstName'];
+        if ($last === true)
+            $name = $name . ' ' . $_SESSION['lastName'];
         if ($post !== null)
-            $title = $title . ' ' . $post;
+        {
+            $title = $title . possessive($name) . ' ' . $post;
+        }
+        else
+        {
+            $title = $title . $name;
+        }
         return $title;
     }
 
