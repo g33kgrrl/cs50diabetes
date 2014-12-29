@@ -35,6 +35,15 @@
     // FatSecret "REST" URL
     define("API_REST", API_URL . "rest/server.api?");
 
+    // FatSecret obtain unauthorized reqest token URL
+    define("API_RTOK", "http://www.fatsecret.com/oauth/request_token");
+
+    // FatSecret obtain unauthorized reqest token URL
+    define("API_ATOK", "http://www.fatsecret.com/oauth/access_token");
+
+    // FatSecret user token authorization
+    define("API_UAUTH", "http://www.fatsecret.com/oauth/authorize");
+
     //please register at http://platform.fatsecret.com for an API KEY 
     define("API_KEY", "caf512af2ef74757be53df253b10601d");
 
