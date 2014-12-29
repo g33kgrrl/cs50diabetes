@@ -24,11 +24,11 @@
                    placeholder="Username" type="text" />
         </div>
         <div class="form-group">
-            <input autofocus class="form-control" required name="fname"
+            <input autofocus class="form-control" required name="firstName"
                    placeholder="First name" type="text" />
         </div>
         <div class="form-group">
-            <input autofocus class="form-control" required name="lname"
+            <input autofocus class="form-control" required name="lastName"
                    placeholder="Last name" type="text" />
         </div>
         <div class="form-group">

@@ -54,13 +54,17 @@
 
         // log the user in, and remember that user is now logged in by storing
         //   user's ID (and all other pertinent info) in _SESSION
-        $_SESSION['id']       = $user['id'];
-        $_SESSION['username'] = $username;
-        $_SESSION['token']    = (string)$token;
-        $_SESSION['secret']   = (string)$secret;
-        $_SESSION['sessKey']  = (string)$sessionKey;
-        $_SESSION['fname']    = $user['fname'];
-        $_SESSION['lname']    = $user['lname'];
+        $_SESSION['id']          = $user['id'];
+        $_SESSION['username']    = $username;
+        $_SESSION['token']       = (string)$token;
+        $_SESSION['secret']      = (string)$secret;
+        $_SESSION['sessionKey']  = (string)$sessionKey;
+        $_SESSION['firstName']   = $user['firstName'];
+        $_SESSION['lastName']    = $user['lastName'];
+        $_SESSION['carbRatio']   = $user['carbRatio'];
+        $_SESSION['sensitivity'] = $user['sensitivity'];
+        $_SESSION['bgTargetMin'] = $user['bgTargetMin'];
+        $_SESSION['bgTargetMax'] = $user['bgTargetMax'];
 
         // redirect to index
         redirect("/");

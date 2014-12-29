@@ -307,6 +307,22 @@ footer
     font-weight: bold;
 }
 
+.mainMenu
+{
+    border-collapse: collapse;
+    border: none !important;
+}
+
+.mainMenu caption
+{
+    font-size: 2em;
+}
+
+.mainMenu td
+{
+    border: none;
+}
+
 .bgTable
 {
     border-collapse: collapse;
@@ -326,7 +342,7 @@ footer
 .bgEntry
 {
     border: none !important;
-    font-size: 3em;
+    font-size: 2em;
     font-weight: bold;
     padding: 10px 0px 10px;
 }
