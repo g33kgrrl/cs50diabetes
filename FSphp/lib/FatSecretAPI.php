@@ -122,18 +122,17 @@ class FatSecretAPI
     //      first issued. (Set to any value less than 0 for default)
     //   @param permittedReferrerRegex {string} A domain restriction for the session. (Set to null if you do not need this)
     //   @param cookie {bool} The desired session_key format
-    //   @param sessionKey {string} The session key for the newly created session is returned here
-    function ProfileRequestScriptSessionKey($auth, $expires, $consumeWithin, $permittedReferrerRegex, $cookie, &$sessionKey)
+    function ProfileRequestScriptSessionKey($auth, $expires=-1, $consumeWithin=-1, $permittedReferrerRegex=null, $cookie=false)
     {
         $url = API_REST . 'method=profile.request_script_session_key';
 
         if(!empty($auth['user_id']))
                 $url = $url . '&user_id=' . $auth['user_id'];
 
-        if($expires > -1)
+        if($expires >= 0)
                 $url = $url . '&expires=' . $expires;
 
-        if($consumeWithin > -1)
+        if($consumeWithin >= 0)
                 $url = $url . '&consume_within=' . $consumeWithin;
 
         if(!empty($permittedReferrerRegex))
@@ -153,7 +152,84 @@ class FatSecretAPI
         $result = new SimpleXMLElement($response);
         $this->ErrorCheck($result);
 
-        $sessionKey = $result->session_key;
+        return $result->session_key;
+    }
+
+    // Build a User Authorization URL for the user to authorize the Request Token and get a verification code
+    //   @return url {string} The User Authorization URL
+    function ProfileBuildUserAuthURL()
+    {
+        $oauth = new OAuthBase();
+
+        $url = API_RTOK . "?" . OAuthBase::$OAUTH_CALLBACK . "=oob";
+
+        $reqUrl;
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
+                                                null, null, $reqUrl); 
+
+        // un-comment for debugging
+        // $this->DisplayString("query",$reqUrl . '?' . $reqParams);
+
+        $response = $this->GetQueryResponse($reqUrl, $reqParams);
+
+        // un-comment for debugging
+        // print 'query response';
+        // var_dump($response);
+
+        $result = $oauth->GetQueryParameters($response);
+
+        // un-comment for debugging
+        // print "Get Request Token";
+        // var_dump($result);
+
+        if ($result['oauth_callback_confirmed'] !== 'true')
+            apologize("arghh");
+
+        $token = $result['oauth_token'];
+        store("token", $token);
+        $secret = $result['oauth_token_secret'];
+        store("secret", $secret);
+        $url = API_UAUTH . "?" . OAuthBase::$OAUTH_TOKEN . "=" . $token;
+
+        return $url;
+    }
+
+    // Get verifier from user and use to get access token and access token secret, then store in DB
+    //   @param verifier {string} Verification code returned after user authorization
+    //   @return result {array} An array containing the access token and access token secret
+    function ProfileGetAccessToken($verifier)
+    {
+        $oauth = new OAuthBase();
+
+        $url = API_ATOK . "?" . OAuthBase::$OAUTH_VERIFIER . "=" . $verifier;
+        // $url = API_ATOK . "?" . OAuthBase::$OAUTH_VERIFIER . "=" . "5677031";
+
+        $token = retrieve("token");
+        $secret = retrieve("secret");
+
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
+                                                $token, $secret, $reqUrl); 
+
+        // un-comment for debugging
+        // $this->DisplayString("query",$reqUrl . '?' . $reqParams);
+
+        $response = $this->GetQueryResponse($reqUrl, $reqParams);
+
+        // un-comment for debugging
+        // print 'query response';
+        // var_dump($response);
+
+        $result = $oauth->GetQueryParameters($response);
+
+        // un-comment for debugging
+        // print "Get Access Token";
+        // var_dump($result);
+        
+        // add FatSecret Access Token and Access Token Secret to user record
+        $addAccessToken = query("UPDATE users SET oauth_token = ? WHERE id = ?", $result["oauth_token"], $_SESSION["id"]);
+        $addAccessTokenSecret = query("UPDATE users SET oauth_token_secret = ? WHERE id = ?", $result["oauth_token_secret"], $_SESSION["id"]);
+
+        return $result;
     }
 
     // Get Weight Entries
@@ -191,57 +267,44 @@ class FatSecretAPI
 
         $oauth = new OAuthBase();
 
-        $token = $_SESSION['token'];
-        $secret = $_SESSION['secret'];
         $reqUrl;
-        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret, $token, $secret, $reqUrl);
-$this->DisplayString("query",$reqUrl . '?' . $reqParams);
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
+                                                $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
         $response = $this->GetQueryResponse($reqUrl, $reqParams);
-print 'query response';
-var_dump($response);
 
         $result = new SimpleXMLElement($response);
         $this->ErrorCheck($result);
-print 'weight log';
-var_dump($result);
-exit;
 
         return $result;
     }
 
     // Get Food Entries
-    function FoodEntriesGet($foodlog)
+    function FoodGetEntries()
     {
-        $url = API_REST . 'method=food_entries.get&date=16424';
-
-        $token = $_SESSION['token'];
-        $secret = $_SESSION['secret'];
+        $url = API_REST . 'method=food_entries.get&date=16429';
 
         $oauth = new OAuthBase();
 
         $reqUrl;
-        $reqParams;
-        $signature = $oauth->GenerateSignature($url,
-                                $this->_consumerKey, $this->_consumerSecret,
-                                $token, $secret, $reqUrl, $reqParams);
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
+                                                $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
-        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$reqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($reqUrl, $prm);
+$this->DisplayString("query",$reqUrl . '?' . $reqParams);
+        $response = $this->GetQueryResponse($reqUrl, $reqParams);
 
 print 'query response';
-var_dump($rsp);
+var_dump($response);
 
-        $doc = new SimpleXMLElement($rsp);
-        $this->ErrorCheck($doc);
+        $result = new SimpleXMLElement($response);
+        $this->ErrorCheck($result);
 
 print "Food Log";
-var_dump($doc);
-print "code=" . ord(substr((string)$doc,0,1));
+var_dump($result);
+print "code=" . ord(substr((string)$result,-1));
 exit;
 
-        return $doc;
+        return $result;
     }
 
     // Search Food Database
@@ -249,34 +312,27 @@ exit;
     {
         $url = API_REST . "method=foods.search&max_results=50&search_expression=\"" . urlencode($searchStr) . '"';
 
-        $token = $_SESSION['token'];
-        $secret = $_SESSION['secret'];
-
         $oauth = new OAuthBase();
 
         $reqUrl;
-        $reqParams;
-        $signature = $oauth->GenerateSignature($url,
-                                $this->_consumerKey, $this->_consumerSecret,
-                                null, null, $reqUrl, $reqParams);
-//                              $token, $secret, $reqUrl, $reqParams);
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret, null, null, $reqUrl);
+//                                              $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
-        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$reqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($reqUrl, $prm);
+$this->DisplayString("query",$reqUrl . '?' . $reqParams);
+        $response = $this->GetQueryResponse($reqUrl, $reqParams);
 
 print 'query response';
-var_dump($rsp);
+var_dump($response);
 
-        $doc = new SimpleXMLElement($rsp);
-        $this->ErrorCheck($doc);
+        $result = new SimpleXMLElement($response);
+        $this->ErrorCheck($response);
 
 print "Food Sesarch: " . $searchStr;
-var_dump($doc);
-print "code=" . ord(substr((string)$doc,-1));
+var_dump($result);
+print "code=" . ord(substr((string)$result,-1));
 exit;
 
-        return $doc;
+        return $result;
     }
 
     // Search Food Database
@@ -287,33 +343,27 @@ exit;
         if ($meal !== null)
             $url = $url . '&meal="' . $meal . '"';
 
-        $token = $_SESSION['token'];
-        $secret = $_SESSION['secret'];
-
         $oauth = new OAuthBase();
 
         $reqUrl;
-        $reqParams;
-        $signature = $oauth->GenerateSignature($url,
-                                $this->_consumerKey, $this->_consumerSecret,
-                                $token, $secret, $reqUrl, $reqParams);
+        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
+                                                $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
-        $prm = (string)$reqParams . '&' . OAuthBase::$OAUTH_SIGNATURE . '=' . urlencode($signature);
-$this->DisplayString("query",$reqUrl . '?' . $prm);
-        $rsp = $this->GetQueryResponse($reqUrl, $prm);
+$this->DisplayString("query",$reqUrl . '?' . $reqParams);
+        $response = $this->GetQueryResponse($reqUrl, $reqParams);
 
 print 'query response';
-var_dump($rsp);
+var_dump($response);
 
-        $doc = new SimpleXMLElement($rsp);
-        $this->ErrorCheck($doc);
+        $result = new SimpleXMLElement($response);
+        $this->ErrorCheck($result);
 
-print "Food Sesarch: " . $meal;
-var_dump($doc);
-print "code=" . ord(substr((string)$doc,-1));
+print "Food Recently Eaten: " . $meal;
+var_dump($result);
+print "code=" . ord(substr((string)$result,-1));
 exit;
 
-        return $doc;
+        return $result;
     }
 
     // Private Methods
@@ -373,6 +423,7 @@ class OAuthBase
     static public $OAUTH_NONCE            = 'oauth_nonce';
     static public $OAUTH_TOKEN            = 'oauth_token';
     static public $OAUTH_TOKEN_SECRET     = 'oauth_token_secret';
+    static public $OAUTH_VERIFIER         = 'oauth_verifier';
 
     protected $unreservedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~';
 
@@ -412,7 +463,7 @@ class OAuthBase
         return 'POST&' . UrlEncode($reqUrl) . '&' . UrlEncode($reqParams);
     }
 
-    private function GetQueryParameters($paramString)
+    function GetQueryParameters($paramString)
     {
         $elements = explode('&', $paramString);
         $result = [];
