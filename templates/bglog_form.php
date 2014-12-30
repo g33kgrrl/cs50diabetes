@@ -211,8 +211,18 @@
 
     <div class="legend">
         <h4 class="center">Key</h4>
-        <p class="bgHigh">H = high</p>
-        <p class="bgHigh">S = high span</p>
-        <p class="bgLow">L = low</p>
+        <p class="bgHigh"> H = high</p>
+        <p class="bgHigh"> S = high span</p>
+        <p class="bgLow"> L = low</p>
+        <p>&nbsp;</p>
+        <p> F = Fasting</p>
+        <p>BB = Before Breakfast</p>
+        <p>AB = After Breakfast</p>
+        <p>BL = Before Lunch</p>
+        <p>AL = After Lunch</p>
+        <p>BD = Before Dinner</p>
+        <p>AD = After Dinner</p>
+        <p>B = Bedtime</p>
+        <p>R = Random</p>
     </div>
 </div>
