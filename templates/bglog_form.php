@@ -18,7 +18,8 @@
 
     <?php foreach ($bgLog as $testDate => $entries): ?>
     <?php $bgDailyAvg = load_bgDailyAvg($bgLog[$testDate]); ?>
-    <table>
+
+    <table class="bg">
         <caption><h3><?= $testDate ?></h3></caption>
         <thead>
             <tr>
@@ -106,7 +107,7 @@
 <div class="twoCols">
     <h2>Averages</h2>
 
-    <table>
+    <table class="bg">
         <caption><h3>By Mealtime</h3></caption>
         <thead>
             <tr>
@@ -147,7 +148,7 @@
     </table>
 
 
-    <table>
+    <table class="bg">
         <caption><h3>By Meal</h3></caption>
         <thead>
             <tr>
@@ -204,12 +205,14 @@
             }
 ?>            
             
-
             <?php endforeach ?>
         </tbody>
     </table>
 
-
-
-
+    <div class="legend">
+        <h4 class="center">Key</h4>
+        <p class="bgHigh">H = high</p>
+        <p class="bgHigh">S = high span</p>
+        <p class="bgLow">L = low</p>
+    </div>
 </div>
