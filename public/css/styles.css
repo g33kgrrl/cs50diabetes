@@ -384,5 +384,6 @@ footer
     background-color: #eeeeee;
     padding: 0 1em 1em 1em;
     text-align: left;
+    line-height: .8em;
     box-shadow: 5px 5px 5px gray;
 }
