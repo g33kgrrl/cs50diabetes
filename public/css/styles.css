@@ -347,6 +347,11 @@ footer
     padding: 10px 0px 10px;
 }
 
+.bgEntry input
+{
+    width: 3em !important;
+}
+
 .bgHigh
 {
     font-weight: bold;
@@ -357,4 +362,11 @@ footer
 {
     font-weight: bold;
     color: #B04400;
+}
+
+.fsDiv
+{
+    width: 560px;
+    margin: 0 auto;
+    float: right;
 }
