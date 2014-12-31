@@ -11,6 +11,9 @@
     *                               *
     \*******************************/
 
+    define('HIGH', " &uArr;");
+    define('LOW',  " &dArr;");
+    define('SPAN', " &hArr;");
 ?>
 
 <div class="twoCols">
@@ -46,7 +49,7 @@
             if ($entry["reading"] < 70 && $entry["reading"] !== "--")
             {
                 $bgLevel = "bgLow";
-                $bgAlert = " &dArr;";
+                $bgAlert = LOW;
             }
             elseif ($entry["reading"] >= 140 || ($entry["reading"] >= 110 &&
                                                     ($entry["mealtime"] == 'F'  ||
@@ -55,7 +58,7 @@
                                                      $entry["mealtime"] == "BD")))
             {
                 $bgLevel = "bgHigh";
-                $bgAlert = " &uArr;";
+                $bgAlert = HIGH;
             }
 
             // check for high mealtime BG span and mark after-meal entry if too high
@@ -79,7 +82,7 @@
                     if ($bgSpan > 40)
                     {
                         $bgLevel = "bgHigh";
-                        $bgAlert .= " &hArr;";
+                        $bgAlert .= SPAN;
                     }
                 }
             }
@@ -128,7 +131,7 @@
             if ($value < 70 && $value !== "--")
             {
                 $bgLevel = "bgLow";
-                $bgAlert = " &dArr;";
+                $bgAlert = LOW;
             }
             elseif ($value >= 140 || ($value >= 110 &&
                                         ($value == 'F'  ||
@@ -137,7 +140,7 @@
                                          $value == "BD")))
             {
                 $bgLevel = "bgHigh";
-                $bgAlert = " &uArr;";
+                $bgAlert = HIGH;
             }
 
 ?>
@@ -194,7 +197,7 @@
                     if ($bgSpan > 40)
                     {
                         $bgLevel = "bgHigh";
-                        $bgAlert = " &hArr;";
+                        $bgAlert = SPAN;
                     }
                 }
 ?>
@@ -214,9 +217,9 @@
 
     <div class="legend">
         <h4 class="center">Legend</h4>
-        <p class="bgHigh"> &uArr; = high</p>
-        <p class="bgHigh"> &hArr; = high span</p>
-        <p class="bgLow"> &dArr; = low</p>
+        <p class="bgHigh"><?=HIGH?> = high</p>
+        <p class="bgHigh"><?=SPAN?> = high span</p>
+        <p class="bgLow"><?=LOW?> = low</p>
         <p>&nbsp;</p>
         <p> F = Fasting</p>
         <p>BB = Before Breakfast</p>

@@ -2,18 +2,17 @@
 
     /*******************************\
     *                               *
-    * index.php                     *
+    * carbgraph.php                 *
     *                               *
     * Computer Science 50           *
     * Final Project                 *
     *                               *
-    * Main page.                    *
+    * Show the carb graph.          *
     *                               *
     \*******************************/
 
     // configuration
-    require("../includes/config.php"); 
+    require("../includes/config.php");
 
-    // render bglog
-    render(makeUserTitle(null, true, null), "mainmenu.php");
+    render(makeUserTitle("Graph", false, "BG"), "carbgraph_disp.php", [], true);
 ?>

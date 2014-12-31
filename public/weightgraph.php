@@ -2,18 +2,17 @@
 
     /*******************************\
     *                               *
-    * index.php                     *
+    * weightgraph.php               *
     *                               *
     * Computer Science 50           *
     * Final Project                 *
     *                               *
-    * Main page.                    *
+    * Show the Weight graph.        *
     *                               *
     \*******************************/
 
     // configuration
-    require("../includes/config.php"); 
+    require("../includes/config.php");
 
-    // render bglog
-    render(makeUserTitle(null, true, null), "mainmenu.php");
+    render(makeUserTitle("Graph", false, "Weight"), "weightgraph_disp.php", [], true);
 ?>

@@ -13,9 +13,6 @@
 \*******************************/
 
 ?>
-        </div>
-
-        <div>
             <footer>
                 <table class="open">
                     <tr>
@@ -54,6 +51,6 @@
                     Copyright <a class="dkblue" href="diag.php">&copy;</a> Inane Asylum, Inc.
                 </p>
             </footer>
-        </div>
+        </div> <!-- container -->
     </body>
 </html>

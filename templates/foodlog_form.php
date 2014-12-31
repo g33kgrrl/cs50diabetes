@@ -16,8 +16,8 @@
 <div>
     <h2><?=$title?></h2>
 
-<!--        <pre><?php var_dump($foodlog); ?></pre>
-        <a href="javascript:history.go(-1);">Back</a> -->
+        <pre><?php var_dump($foodlog); ?></pre>
+        <a href="javascript:history.go(-1);">Back</a>
 
 <?php
     foreach ($foodlog as $idx => $foodday)

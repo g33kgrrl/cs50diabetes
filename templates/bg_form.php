@@ -14,9 +14,6 @@
 ?>
 
 <div>
-
-
-<div>
     <h2><?=$title?></h2>
 
     <form action="bg.php" method="post">
