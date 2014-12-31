@@ -13,14 +13,16 @@
 
 ?>
 
-<p class="lead text-danger">
-    <img alt="Sorry!" src="/img/Sorry.jpg" width=200 />
-</p>
-<p class="bigred">
-    <?= htmlspecialchars($message) ?>
-</p>
+<div>
+    <p class="lead text-danger">
+        <img alt="Sorry!" src="/img/Sorry.jpg" width=200 />
+    </p>
+    <p class="bigred">
+        <?= htmlspecialchars($message) ?>
+    </p>
 <?php if (isset($extra)) { ?>
-<p class="medred">
-    <?= htmlspecialchars($extra) ?>
-</p>
+    <p class="medred">
+        <?= htmlspecialchars($extra) ?>
+    </p>
 <?php } ?>
+</div>

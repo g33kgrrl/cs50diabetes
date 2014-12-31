@@ -237,10 +237,19 @@ class FatSecretAPI
         $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
                                 $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
+        // un-comment for debugging
+        $this->DisplayString("query",$reqUrl . '?' . $reqParams);
+
         $response = $this->GetQueryResponse($reqUrl, $reqParams);
+        // un-comment for debugging
+        print 'query response';
+        var_dump($response);
 
         $result = new SimpleXMLElement($response);
         $this->ErrorCheck($result);
+        // un-comment for debugging
+        var_dump($result);
+        exit;
 
         return $result;
     }

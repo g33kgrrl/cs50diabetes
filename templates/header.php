@@ -46,8 +46,8 @@
             ?>
                         <img src="/img/CS50Diabetes.png" title="CS50 Diabetes" width="400" />
                         <div class="fsDiv">
-<!--                        <script src="<?=API_LOAD?>key=<?=API_KEY?>&auto_load=true&show_loading=true&theme=blue_small"></script> -->
-                            <script src="<?=API_LOAD?>key=<?=API_KEY?>&auto_load=true&theme=blue_small"></script>
+                            <script src="<?=API_LOAD?>key=<?=API_KEY?>&auto_load=true&show_loading=true&theme=blue_small"></script>
+<!--                        <script src="<?=API_LOAD?>key=<?=API_KEY?>&auto_load=true&theme=blue_small"></script> -->
                         </div>
             <?php
                     }
@@ -66,5 +66,3 @@
             <?php
                 }
             ?>
-            
-            <div class="container center">

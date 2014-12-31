@@ -14,18 +14,10 @@
     // configuration
     require("../includes/config.php");
 
-    $weightlog;
-    try
-    {
-        $weightlog = $FS->WeightGetMonth();
-    }
-    catch(FatSecretException $ex)
-    {
-        $FS->Apologize("Unable to get FS weight log!", $ex);
-    }
+    $weightlog = load_weightLog($FS);
 
     // Pass weight log history for rendering
-    render(makeUserTitle(null, false, "Weight Log"), "weightlog_form.php",
+    render(makeUserTitle(null, false, "Weight Log"), "weightlog_disp.php",
            [ "weightlog" => $weightlog ], true );
 
 ?>

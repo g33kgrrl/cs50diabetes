@@ -226,7 +226,7 @@
     {
         $bgLog = [];
 
-        $entries = query("SELECT * FROM bglog WHERE id = ?", $_SESSION["id"]);
+        $entries = query("SELECT * FROM bglog WHERE id = ? AND reading > 0", $_SESSION["id"]);
 
         foreach ($entries as $entry)
         {
@@ -270,7 +270,7 @@
         $totcnt = 0;
         foreach ($mealtimes as $mealtime)
         {
-            $entries = query("SELECT reading FROM bglog WHERE id = ? AND mealtime = ?", $_SESSION["id"], $mealtime);
+            $entries = query("SELECT reading FROM bglog WHERE id = ? AND mealtime = ? AND reading > 0", $_SESSION["id"], $mealtime);
 
             $cnt = count($entries);
             $totcnt += $cnt;
@@ -298,6 +298,204 @@
 
         return $bgMealtimeAvgs;
     }
+
+    /**
+     * Fetch user's carb log and load into array.
+     */
+    function load_carbLog()
+    {
+        $carbLog = [];
+
+        $entries = query("SELECT * FROM bglog WHERE id = ? AND carbs > 0", $_SESSION["id"]);
+
+        foreach ($entries as $entry)
+        {
+            $phpTimestamp = strtotime($entry["timestamp"]);
+
+            $testDate = date("m-d-y", $phpTimestamp);
+
+            $carbLog[$testDate][] = [
+                "dbTimestamp"  => $entry["timestamp"],
+                "phpTimestamp" => $phpTimestamp,
+                "date"         => $testDate,
+                "time"         => date("g:i a", $phpTimestamp),
+                "mealtime"     => $entry["mealtime"],
+                "carbs"        => $entry["carbs"],
+            ];
+        }
+
+        return $carbLog;
+    }
+
+    /**
+     * Calculate user's daily average carbs
+     */
+    function load_carbDailyAvg($entries)
+    {
+        $carbsDailyAvg = number_format(round(array_sum(array_column($entries, 'carbs')) / count($entries), 1), 1);
+
+        return $carbsDailyAvg;
+    }
+
+    /**
+     * Calculate user's average blood glucose at each mealtime
+     */
+    function load_carbMealtimeAvgs()
+    {
+        $carbsMealtimeAvgs = [];
+        $entries = [];
+        $mealtimes = ['F', 'BB', 'AB', 'BL', 'AL', 'BD', 'AD', 'B', 'R'];
+
+        $total = 0;
+        $totcnt = 0;
+        foreach ($mealtimes as $mealtime)
+        {
+            $entries = query("SELECT carbs FROM bglog WHERE id = ? AND mealtime = ? AND carbs > 0", $_SESSION["id"], $mealtime);
+
+            $cnt = count($entries);
+            $totcnt += $cnt;
+            if ($cnt === 0)
+            {
+                $carbsMealtimeAvgs[$mealtime] = '--';
+            }
+            else
+            {
+                $sum = array_sum(array_column($entries, 'carbs'));
+                $total += $sum;
+                $carbsMealtimeAvgs[$mealtime] = number_format(round($sum / $cnt, 1), 1);
+            }
+
+        }
+
+        if ($totcnt === 0)
+        {
+            $carbsMealtimeAvgs['ALL'] = '--';
+        }
+        else
+        {
+            $carbsMealtimeAvgs['ALL'] = number_format(round($total / $totcnt, 1), 1);
+        }
+
+        return $carbsMealtimeAvgs;
+    }
+
+    /**
+     * Fetch user's bolus log and load into array.
+     */
+    function load_bolusLog()
+    {
+        $bolusLog = [];
+
+        $entries = query("SELECT * FROM bglog WHERE id = ? AND bolus > 0", $_SESSION["id"]);
+
+        foreach ($entries as $entry)
+        {
+            $phpTimestamp = strtotime($entry["timestamp"]);
+
+            $testDate = date("m-d-y", $phpTimestamp);
+
+            $bolusLog[$testDate][] = [
+                "dbTimestamp"  => $entry["timestamp"],
+                "phpTimestamp" => $phpTimestamp,
+                "date"         => $testDate,
+                "time"         => date("g:i a", $phpTimestamp),
+                "mealtime"     => $entry["mealtime"],
+                "bolus"        => $entry["bolus"],
+            ];
+        }
+
+        return $bolusLog;
+    }
+
+    /**
+     * Calculate user's daily average bolus
+     */
+    function load_bolusDailyAvg($entries)
+    {
+        $bolusDailyAvg = number_format(round(array_sum(array_column($entries, 'bolus')) / count($entries), 1), 1);
+
+        return $bolusDailyAvg;
+    }
+
+    /**
+     * Calculate user's average blood glucose at each mealtime
+     */
+    function load_bolusMealtimeAvgs()
+    {
+        $bolusMealtimeAvgs = [];
+        $entries = [];
+        $mealtimes = ['F', 'BB', 'AB', 'BL', 'AL', 'BD', 'AD', 'B', 'R'];
+
+        $total = 0;
+        $totcnt = 0;
+        foreach ($mealtimes as $mealtime)
+        {
+            $entries = query("SELECT bolus FROM bglog WHERE id = ? AND mealtime = ? AND bolus > 0", $_SESSION["id"], $mealtime);
+
+            $cnt = count($entries);
+            $totcnt += $cnt;
+            if ($cnt === 0)
+            {
+                $bolusMealtimeAvgs[$mealtime] = '--';
+            }
+            else
+            {
+                $sum = array_sum(array_column($entries, 'bolus'));
+                $total += $sum;
+                $bolusMealtimeAvgs[$mealtime] = number_format(round($sum / $cnt, 1), 1);
+            }
+
+        }
+
+        if ($totcnt === 0)
+        {
+            $bolusMealtimeAvgs['ALL'] = '--';
+        }
+        else
+        {
+            $bolusMealtimeAvgs['ALL'] = number_format(round($total / $totcnt, 1), 1);
+        }
+
+        return $bolusMealtimeAvgs;
+    }
+
+    /**
+     * Fetch user's weight log and load into array.
+     */
+    function load_weightLog($FS)
+    {
+        $weightLog = [];
+
+        try
+        {
+            $weightlog = $FS->WeightGetMonth();
+        }
+        catch(FatSecretException $ex)
+        {
+            $FS->Apologize("Unable to get FS weight log!", $ex);
+        }
+var_dump($weightLog);
+exit;
+
+        foreach ($entries as $entry)
+        {
+            $phpTimestamp = strtotime($entry["timestamp"]);
+
+            $testDate = date("m-d-y", $phpTimestamp);
+
+            $weightLog[$testDate][] = [
+                "dbTimestamp"  => $entry["timestamp"],
+                "phpTimestamp" => $phpTimestamp,
+                "date"         => $testDate,
+                "time"         => date("g:i a", $phpTimestamp),
+                "mealtime"     => $entry["mealtime"],
+                "weight"        => $entry["weight"],
+            ];
+        }
+
+        return $weightLog;
+    }
+
 
     // Redirects user to destination, which can be a URL or a relative path on
     //   the local host.
@@ -356,17 +554,16 @@
             print '<div id="middle">' . "\n";
             // render template
             require("../templates/$template");
-            print "</div>\n";
+            print "</div> <!-- middle -->\n";
 
             // render link, if specified
             if ($link !== null)
             {
-                print "<div>\n";
                 if ($linkmsg === null)
                 {
                     $linkmsg = $link;
                 }
-                print '<div><br/><p class="medium"><a href="'.$link.'">'.$linkmsg."</a></p><br/></div>\n";
+                print '<div class="medium"><br/><a href="' . $link . '">' . $linkmsg . "</a><br/></div>\n";
             }
 
             // render footer
