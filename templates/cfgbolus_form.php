@@ -21,7 +21,7 @@
         <fieldset>
 
             <div class="bgentry">
-                <input type="checkbox" name="enable" value=true <?=$enabled?>> Enable Insulin Bolusing
+                <input type="checkbox" name="enabled" value=true <?=$state?>> Enable Insulin Bolusing
             </div>
 
             <div class="bgEntry">

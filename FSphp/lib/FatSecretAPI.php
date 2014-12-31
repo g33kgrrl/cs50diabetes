@@ -53,16 +53,16 @@ class FatSecretAPI
     //   @param time {timestamp} Seconds since epoch
     function DateInt($time)
     {
-        return floor($time / 3600 / 24);
+        return floor($time / 60 / 60 / 24);
     }
 
     // Display apology graphic and message, plus FS error information
     //   @param msg {string} Apology message
     //   @param ex {FatSecretException} Error structure from FatSecret API
     //   @param url {string} Url to continue to when user clicks through the error
-    function Apologize($msg,$ex,$url)
+    function Apologize($msg,$ex,$url=null)
     {
-        apologize($msg . " Error: " . $ex->getCode() . " - " . $ex->getMessage(), $url);
+        apologize($msg, $url, "Error: " . $ex->getCode() . " - " . $ex->getMessage());
     }
 
     // Create a new profile with a user specified ID
@@ -161,7 +161,7 @@ class FatSecretAPI
     {
         $oauth = new OAuthBase();
 
-        $url = API_RTOK . "?" . OAuthBase::$OAUTH_CALLBACK . "=oob";
+        $url = API_RTOK . "?" . OAuthBase::$OAUTH_CALLBACK_OOB;
 
         $reqUrl;
         $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
@@ -182,13 +182,14 @@ class FatSecretAPI
         // print "Get Request Token";
         // var_dump($result);
 
-        if ($result['oauth_callback_confirmed'] !== 'true')
-            apologize("arghh");
+        if ($result[OAuthBase::$OAUTH_CALLBACK_CONF] !== 'true')
+            apologize("OAuth callback failed to confirm");
 
-        $token = $result['oauth_token'];
+        $token = $result[OAuthBase::$OAUTH_TOKEN];
         store("token", $token);
-        $secret = $result['oauth_token_secret'];
+        $secret = $result[OAuthBase::$OAUTH_TOKEN_SECRET];
         store("secret", $secret);
+
         $url = API_UAUTH . "?" . OAuthBase::$OAUTH_TOKEN . "=" . $token;
 
         return $url;
@@ -202,32 +203,25 @@ class FatSecretAPI
         $oauth = new OAuthBase();
 
         $url = API_ATOK . "?" . OAuthBase::$OAUTH_VERIFIER . "=" . $verifier;
-        // $url = API_ATOK . "?" . OAuthBase::$OAUTH_VERIFIER . "=" . "5677031";
 
         $token = retrieve("token");
         $secret = retrieve("secret");
 
         $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
                                                 $token, $secret, $reqUrl); 
-
         // un-comment for debugging
-        // $this->DisplayString("query",$reqUrl . '?' . $reqParams);
+        $this->DisplayString("query",$reqUrl . '?' . $reqParams);
 
         $response = $this->GetQueryResponse($reqUrl, $reqParams);
-
         // un-comment for debugging
-        // print 'query response';
-        // var_dump($response);
+        print 'query response';
+        var_dump($response);
 
         $result = $oauth->GetQueryParameters($response);
-
         // un-comment for debugging
-        // print "Get Access Token";
-        // var_dump($result);
-        
-        // add FatSecret Access Token and Access Token Secret to user record
-        $addAccessToken = query("UPDATE users SET oauth_token = ? WHERE id = ?", $result["oauth_token"], $_SESSION["id"]);
-        $addAccessTokenSecret = query("UPDATE users SET oauth_token_secret = ? WHERE id = ?", $result["oauth_token_secret"], $_SESSION["id"]);
+        //print "Get Access Token";
+        //var_dump($result);
+        //exit;
 
         return $result;
     }
@@ -251,6 +245,7 @@ class FatSecretAPI
         return $result;
     }
 
+/*
     // Log a weigh-in
     function LogWeighIn($weight, $comment=null, $height=null, $goalWeight=null)
     {
@@ -278,11 +273,12 @@ class FatSecretAPI
 
         return $result;
     }
+*/
 
     // Get Food Entries
-    function FoodGetEntries()
+    function FoodGetEntries($date)
     {
-        $url = API_REST . 'method=food_entries.get&date=16429';
+        $url = API_REST . 'method=food_entries.get&date=' . floor($date);
 
         $oauth = new OAuthBase();
 
@@ -290,51 +286,16 @@ class FatSecretAPI
         $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
                                                 $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
-$this->DisplayString("query",$reqUrl . '?' . $reqParams);
         $response = $this->GetQueryResponse($reqUrl, $reqParams);
-
-print 'query response';
-var_dump($response);
 
         $result = new SimpleXMLElement($response);
         $this->ErrorCheck($result);
 
-print "Food Log";
-var_dump($result);
-print "code=" . ord(substr((string)$result,-1));
-exit;
-
-        return $result;
+        return $response;
+//      return $result;
     }
 
-    // Search Food Database
-    function SearchFood($searchStr)
-    {
-        $url = API_REST . "method=foods.search&max_results=50&search_expression=\"" . urlencode($searchStr) . '"';
-
-        $oauth = new OAuthBase();
-
-        $reqUrl;
-        $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret, null, null, $reqUrl);
-//                                              $_SESSION['token'], $_SESSION['secret'], $reqUrl);
-
-$this->DisplayString("query",$reqUrl . '?' . $reqParams);
-        $response = $this->GetQueryResponse($reqUrl, $reqParams);
-
-print 'query response';
-var_dump($response);
-
-        $result = new SimpleXMLElement($response);
-        $this->ErrorCheck($response);
-
-print "Food Sesarch: " . $searchStr;
-var_dump($result);
-print "code=" . ord(substr((string)$result,-1));
-exit;
-
-        return $result;
-    }
-
+/*
     // Search Food Database
     function FoodRecentlyEaten($meal)
     {
@@ -365,6 +326,7 @@ exit;
 
         return $result;
     }
+*/
 
     // Private Methods
     private function DisplayString($name,$str)
@@ -424,6 +386,9 @@ class OAuthBase
     static public $OAUTH_TOKEN            = 'oauth_token';
     static public $OAUTH_TOKEN_SECRET     = 'oauth_token_secret';
     static public $OAUTH_VERIFIER         = 'oauth_verifier';
+
+    static public $OAUTH_CALLBACK_CONF    = 'oauth_callback_confirmed';
+    static public $OAUTH_CALLBACK_OOB     = 'oauth_callback=oob';
 
     protected $unreservedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~';
 

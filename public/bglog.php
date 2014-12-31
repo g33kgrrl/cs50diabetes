@@ -19,7 +19,7 @@
     $bgMealtimeAvgs = load_bgMealtimeAvgs();
         
     // tack on blood glucose log and page title before passing data to render()       
-    render(makeusertitle(null,false,"BG Log"), "bglog_form.php",
+    render(makeUserTitle(null, false, "BG Log"), "bglog_form.php",
            [ "bgLog" => $bgLog, "bgMealtimeAvgs" => $bgMealtimeAvgs], true);
 
 ?>

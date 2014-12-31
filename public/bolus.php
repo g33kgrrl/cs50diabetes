@@ -27,6 +27,9 @@
         $params = [];
         $bolus = 0;
 
+        // get mealtime
+        $mealtime = $_POST["mealtime"];
+
         // get blood glucose
         $BG = $_POST['BG'];
         if ($BG > 0)
@@ -41,6 +44,11 @@
                 $partial = 0;
             $params['BG'] = [ 'BG' => $BG . " mg/dL", 'bolus' => $partial ];
             $bolus += $partial;
+
+        }
+        else
+        {
+            $BG = 0;
         }
 
         $carbs = $_POST['carbs'];
@@ -50,38 +58,40 @@
             $params['Carbs'] = [ 'Carbs' => $carbs . " gm", 'bolus' => $partial ];
             $bolus += $partial;
         }
+        else
+            $carbs = 0;
 
-        $mealtime = $_POST["mealtime"];
-
+        $bolus = floor($bolus * 10) / 10;
         if ($bolus < 0)
             $bolus = 0;
 
-        $params['bolus'] = number_format(floor($bolus * 10) / 10, 1);
+        $params['bolus'] = number_format($bolus, 1);
 
-        if ($BG > 0)
+        if ($carbs > 0 || $BG > 0)
         {
             // add bg reading to log
-            $stat = query("INSERT INTO bglog (id, mealtime, reading) VALUES(?, ?, ?)", $_SESSION["id"], $mealtime, $BG);
+            $stat = query("INSERT INTO bglog (id, mealtime, reading, carbs, bolus) VALUES(?, ?, ?, ?, ?)",
+                          $_SESSION["id"], $mealtime, $BG, $carbs, $bolus);
 
             if ($stat === false)
             {
-                apologize("Bolus = " . $params['bolus'] . " Could not add reading to blood glucose log.");
+                apologize("Bolus = " . $params['bolus'], null, "Could not add entry to bg log.");
             }
         }
 
         // Render form to confirm purchase
-        render(makeusertitle("Display Bolus for",false,null), "bolus_disp.php", $params, true);
+        render(makeUserTitle("Display", false, "Bolus"), "bolus_disp.php", $params, true);
     }
 
     // else render form
     else
     {
-        if ($_SESSION['carbRatio'] == 0)
+        if ($_SESSION['carbRatio'] <= 0)
         {
             apologize("Bolus not enabled!");
         }
 
-        render(makeusertitle("Calculate Bolus for",false,null), "bolus_form.php", [], true);
+        render(makeUserTitle("Calculate", false, "Bolus"), "bolus_form.php", [], true);
     }
 
 ?>

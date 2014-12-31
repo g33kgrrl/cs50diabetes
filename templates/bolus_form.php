@@ -19,14 +19,6 @@
     <form action="bolus.php" method="post">
         <fieldset>
 
-            <div class="bgEntry">
-                Carbs: <input autofocus class="form-small" name="carbs" placeholder="###" type="number" min="1" max="999" value="" /> gm
-            </div>
-
-            <div class="bgEntry">
-                BG: <input class="form-small" name="BG" placeholder="###" type="number" min="1" max="999" value="" /> mg/dL
-            </div>
-
             <div>
                 <table class="bgTable">
 
@@ -79,6 +71,14 @@
                 ?>
 
                 </table>
+            </div>
+
+            <div class="bgEntry">
+                Carbs: <input autofocus class="form-small" name="carbs" placeholder="###" type="number" min="1" max="999" value="" /> gm
+            </div>
+
+            <div class="bgEntry">
+                BG: <input class="form-small" name="BG" placeholder="###" type="number" min="1" max="999" value="" /> mg/dL
             </div>
 
             <div class="form-group">

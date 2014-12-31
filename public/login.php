@@ -21,6 +21,7 @@
         $url = 'login.php';
         $username = $_POST['username'];
         $password = $_POST['password'];
+
         // query database for user
         $users = query("SELECT * FROM users WHERE username = ?", $username);
 
@@ -39,32 +40,21 @@
             apologize("Invalid password",$url);
         }
 
-        $token;
-        $secret;
-	try
+        $token = $user['token'];;
+        $secret = $user['secret'];
+        if (empty($token))
         {
-            $FS->ProfileGetAuth($username, $token, $secret);
-	}
-	catch(FatSecretException $ex)
-        {
-            $FS->Apologize("Unable to authorize FS profile!", $ex, $url);
-	}
-        $auth = [ 'user_id' => $username, 'token' => (string)$token, 'secret' => (string)$secret ];
-        $sessionKey = $FS->ProfileRequestScriptSessionKey($auth, null, null, null, false);
+            try
+            {
+                $FS->ProfileGetAuth($username, $token, $secret);
+            }
+            catch(FatSecretException $ex)
+            {
+                $FS->Apologize("Unable to authorize FS profile!", $ex, $url);
+            }
+        }
 
-        // log the user in, and remember that user is now logged in by storing
-        //   user's ID (and all other pertinent info) in _SESSION
-        $_SESSION['id']          = $user['id'];
-        $_SESSION['username']    = $username;
-        $_SESSION['token']       = (string)$token;
-        $_SESSION['secret']      = (string)$secret;
-        $_SESSION['sessionKey']  = (string)$sessionKey;
-        $_SESSION['firstName']   = $user['firstName'];
-        $_SESSION['lastName']    = $user['lastName'];
-        $_SESSION['carbRatio']   = $user['carbRatio'];
-        $_SESSION['sensitivity'] = $user['sensitivity'];
-        $_SESSION['bgTargetMin'] = $user['bgTargetMin'];
-        $_SESSION['bgTargetMax'] = $user['bgTargetMax'];
+        updateSessionUser($username, $token, $secret);
 
         // redirect to index
         redirect("/");
