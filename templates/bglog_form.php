@@ -30,32 +30,32 @@
         </thead>
         <tbody>
 
-<?php 
+<?php
             $beforeMeal;
             $meal = "";
             $bgSpan;
 ?>
 
             <? foreach ($entries as $entry): ?>
-            
+
 <?
             $bgLevel = "";
-            $bgAlert = "";            
-            
+            $bgAlert = "";
+
             // check for BG high/low and mark entry as needed
             if ($entry["reading"] < 70 && $entry["reading"] !== "--")
             {
                 $bgLevel = "bgLow";
-                $bgAlert = " L";
+                $bgAlert = " &dArr;";
             }
-            elseif ($entry["reading"] >= 140 || ($entry["reading"] >= 110 && 
-                                                    ($entry["mealtime"] == 'F'  || 
-                                                     $entry["mealtime"] == "BB" || 
-                                                     $entry["mealtime"] == "BL" || 
+            elseif ($entry["reading"] >= 140 || ($entry["reading"] >= 110 &&
+                                                    ($entry["mealtime"] == 'F'  ||
+                                                     $entry["mealtime"] == "BB" ||
+                                                     $entry["mealtime"] == "BL" ||
                                                      $entry["mealtime"] == "BD")))
             {
                 $bgLevel = "bgHigh";
-                $bgAlert = " H";
+                $bgAlert = " &uArr;";
             }
 
             // check for high mealtime BG span and mark after-meal entry if too high
@@ -70,16 +70,16 @@
                     $entry["mealtime"] === "AL" ||
                     $entry["mealtime"] === "AD")
             {
-                if (substr($entry["mealtime"], -1) === $meal && 
-                    $entry["reading"]              !== "--" && 
+                if (substr($entry["mealtime"], -1) === $meal &&
+                    $entry["reading"]              !== "--" &&
                     $beforeMeal                    !== "--")
                 {
                     $bgSpan = $entry["reading"] - $beforeMeal;
-                    
+
                     if ($bgSpan > 40)
                     {
                         $bgLevel = "bgHigh";
-                        $bgAlert .= " S";
+                        $bgAlert .= " &hArr;";
                     }
                 }
             }
@@ -101,6 +101,9 @@
         </tbody>
     </table>
     <?php endforeach ?>
+    <div class="medred">
+        <a href="bggraph.php">Graph It!</a>
+    </div>
 
 </div>
 
@@ -120,23 +123,23 @@
             <?php foreach ($bgMealtimeAvgs as $bgMealtimeAvg => $value): ?>
 <?
             $bgLevel = "";
-            $bgAlert = "";            
-            
+            $bgAlert = "";
+
             if ($value < 70 && $value !== "--")
             {
                 $bgLevel = "bgLow";
-                $bgAlert = " L";
+                $bgAlert = " &dArr;";
             }
-            elseif ($value >= 140 || ($value >= 110 && 
-                                        ($value == 'F'  || 
-                                         $value == "BB" || 
-                                         $value == "BL" || 
+            elseif ($value >= 140 || ($value >= 110 &&
+                                        ($value == 'F'  ||
+                                         $value == "BB" ||
+                                         $value == "BL" ||
                                          $value == "BD")))
             {
                 $bgLevel = "bgHigh";
-                $bgAlert = " H";
+                $bgAlert = " &uArr;";
             }
-            
+
 ?>
 
             <tr class="<?= $bgMealtimeAvg . " " . $bgLevel ?>">
@@ -162,10 +165,10 @@
             $beforeMeal;
             $meal;
             $bgSpan;
-            
+
             foreach ($bgMealtimeAvgs as $bgMealtimeAvg => $value): ?>
 <?
-            
+
             $bgLevel = "";
             $bgAlert = "";
 
@@ -187,11 +190,11 @@
                 else
                 {
                     $bgSpan = $value - $beforeMeal;
-                    
+
                     if ($bgSpan > 40)
                     {
                         $bgLevel = "bgHigh";
-                        $bgAlert = " S";
+                        $bgAlert = " &hArr;";
                     }
                 }
 ?>
@@ -201,19 +204,19 @@
                     <td><?= $bgSpan . $bgAlert ?></td>
                 </tr>
 
-<?
+<?php
             }
-?>            
-            
+?>
+
             <?php endforeach ?>
         </tbody>
     </table>
 
     <div class="legend">
-        <h4 class="center">Key</h4>
-        <p class="bgHigh"> H = high</p>
-        <p class="bgHigh"> S = high span</p>
-        <p class="bgLow"> L = low</p>
+        <h4 class="center">Legend</h4>
+        <p class="bgHigh"> &uArr; = high</p>
+        <p class="bgHigh"> &hArr; = high span</p>
+        <p class="bgLow"> &dArr; = low</p>
         <p>&nbsp;</p>
         <p> F = Fasting</p>
         <p>BB = Before Breakfast</p>
