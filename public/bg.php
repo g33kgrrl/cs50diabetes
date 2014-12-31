@@ -19,17 +19,13 @@
     {
         // get blood glucose
         $bgReading = $_POST["bgReading"];
-        
-        // whole numbers only
-        if (!preg_match("/^\d+$/", $bgReading))
-        {
-            apologize("\"{$bgReading}\" is not a valid reading.");
-        }
-        
+
+        // get meal time
         $mealtime = $_POST["mealtime"];
         
         // add bg reading to log
-        $addReading = query("INSERT INTO bglog (id, mealtime, reading) VALUES(?, ?, ?)", $_SESSION["id"], $mealtime, $bgReading);
+        $addReading = query("INSERT INTO bglog (id, mealtime, reading) VALUES(?, ?, ?)",
+                            $_SESSION["id"], $mealtime, $bgReading);
         
         if ($addReading === false)
         {
@@ -41,6 +37,6 @@
     // else render form
     else
     {
-        render(makeusertitle("Enter",false,"Blood Glucose"), "bg_form.php", [], true);
+        render(makeUserTitle("Enter", false, "Blood Glucose"), "bg_form.php", [], true);
     }
 ?>

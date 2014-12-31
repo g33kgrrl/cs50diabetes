@@ -30,16 +30,22 @@
     }
 
     // Apologizes to user with message.
-    function apologize($message, $againurl=null)
+    function apologize($message, $againurl=null, $extra=null)
     {
+        $params = [ 'message' => $message ];
+
+        if (isset($extra))
+        {
+            $params['extra'] = $extra;
+        }
+
         if ($againurl === null)
         {
-            render(null, "apology.php", [ "message" => $message ] );
+            render(null, "apology.php", $params );
         }
         else
         {
-            render(null, "apology.php", [ "message" => $message ], true,
-                         $againurl, "Try Again");
+            render(null, "apology.php", $params, true, $againurl, "Try Again");
         }
         exit;
     }
@@ -59,7 +65,7 @@
         return $str . '\'s';
     }
 
-    function makeusertitle($pre,$last,$post)
+    function makeUserTitle($pre,$last,$post)
     {
         $title = '';
         if ($pre !== null)
@@ -76,6 +82,43 @@
             $title = $title . $name;
         }
         return $title;
+    }
+
+    function updateSessionUser($username,$tok=null,$sec=null)
+    {
+        // query database for user
+        $users = query("SELECT * FROM users WHERE username = ?", $username);
+
+        // if # of matches is NOT one, flag an error
+        if (count($users) != 1)
+        {
+            apologize("Invalid username", $url);
+        }
+
+        // first (and only) row
+        $user = $users[0];
+
+        $token = $user['token'];
+        $secret = $user['secret'];
+
+        if (empty($token))
+        {
+            $token = $tok;
+            $secret = $sec;
+        }
+
+        // log the user in, and remember that user is now logged in by storing
+        //   user's ID (and all other pertinent info) in _SESSION
+        $_SESSION['id']          = $user['id'];
+        $_SESSION['username']    = $username;
+        $_SESSION['firstName']   = $user['firstName'];
+        $_SESSION['lastName']    = $user['lastName'];
+        $_SESSION['token']       = $token;
+        $_SESSION['secret']      = $secret;
+        $_SESSION['carbRatio']   = $user['carbRatio'];
+        $_SESSION['sensitivity'] = $user['sensitivity'];
+        $_SESSION['bgTargetMin'] = $user['bgTargetMin'];
+        $_SESSION['bgTargetMax'] = $user['bgTargetMax'];
     }
 
     // Logs out current user, if any.  Based on Example #1 at

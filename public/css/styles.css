@@ -201,6 +201,14 @@ footer
     font-style: italic;
 }
 
+.medred
+{
+    font-size: 150%;
+    font-style: italic;
+    font-weight: bold;
+    color: darkred;
+}
+
 .bigred
 {
     font-size: 180%;

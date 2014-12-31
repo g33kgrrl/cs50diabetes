@@ -55,7 +55,7 @@
     else
     {
         // else render form
-        render(makeusertitle("Change",false,"Password"), "chgpwd_form.php", [], true);
+        render(makeUserTitle("Change", false, "Password"), "chgpwd_form.php", [], true);
     }
 
 ?>

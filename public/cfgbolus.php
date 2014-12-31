@@ -24,55 +24,29 @@
     {
         $url = "cfgbolus.php";
 
+        $enabled = isset($_POST['enabled']);
         $carbRatio   = $_POST['carbRatio'];
-        $sesitivity  = $_POST['sensitivity'];
+        $sensitivity = $_POST['sensitivity'];
         $bgTargetMin = $_POST['bgTargetMin'];
         $bgTargetMax = $_POST['bgTargetMax'];
 
-        // get blood glucose
-        $BG = $_POST['BG'];
-        if ($BG > 0)
-        {
-            $bgTMin = $_SESSION['bgTargetMin'];
-            $bgTMax = $_SESSION['bgTargetMax'];
-            if ($BG > $bgTMax)
-                $partial = ($BG - $_SESSION['bgTargetMax']) / $_SESSION['sensitivity'];
-            else if ($BG < $bgTMin)
-                $partial = ($BG - $_SESSION['bgTargetMin']) / $_SESSION['sensitivity'];
-            else
-                $partial = 0;
-            $params['BG'] = [ 'BG' => $BG . " mg/dL", 'bolus' => $partial ];
-            $bolus += $partial;
-        }
+        if (!$enabled)
+            $carbRatio = -abs($carbRatio);
+        if ($bgTargetMax - $bgTargetMin < 5)
+            apologize("BG Target Min must be at least 5 less than Max", $url);
+        if ($bgTargetMax - $bgTargetMin > 20)
+            apologize("BG Target Max must be no more than 20 greater than Min", $url);
 
-        $carbs = $_POST['carbs'];
-        if ($carbs > 0)
-        {
-            $partial = $carbs / $_SESSION['carbRatio'];
-            $params['Carbs'] = [ 'Carbs' => $carbs . " gm", 'bolus' => $partial ];
-            $bolus += $partial;
-        }
+        // Update users DB with new bolius configuration info
+        $stat = query("UPDATE users SET carbRatio = ?, sensitivity = ?, bgTargetMin = ?, bgTargetMax = ? WHERE id = ?", $carbRatio, $sensitivity, $bgTargetMin, $bgTargetMax, $_SESSION['id']);
 
-        $mealtime = $_POST["mealtime"];
+    print "stat {" . sizeof($stat) . "}<br/>";
+    var_dump($stat);
 
-        if ($bolus < 0)
-            $bolus = 0;
-
-        $params['bolus'] = number_format(floor($bolus * 10) / 10, 1);
-
-        if ($BG > 0)
-        {
-            // add bg reading to log
-            $stat = query("INSERT INTO bglog (id, mealtime, reading) VALUES(?, ?, ?)", $_SESSION["id"], $mealtime, $BG);
-
-            if ($stat === false)
-            {
-                apologize("Bolus = " . $params['bolus'] . " Could not add reading to blood glucose log.");
-            }
-        }
+        updateSessionUser($_SESSION['username']);
 
         // Render form to confirm purchase
-        render(makeusertitle("Display Bolus for",false,null), "bolus_disp.php", $params, true);
+        redirect('/');
     }
 
     // else render form
@@ -82,12 +56,12 @@
 // Sensitivity: 20 mg/dL per U (10-400)
 // BG Target: 95-100 mg/dL (60-250)
         $params =
-            [ 'enabled'     => ($_SESSION['carbRatio'] >= 0) ? "checked" : "",
-              'carbRatio'   => $_SESSION['carbRatio'],
+            [ 'state'       => ($_SESSION['carbRatio'] > 0) ? "checked" : "unchecked",
+              'carbRatio'   => abs($_SESSION['carbRatio']),
               'sensitivity' => $_SESSION['sensitivity'],
               'bgTargetMin' => $_SESSION['bgTargetMin'],
               'bgTargetMax' => $_SESSION['bgTargetMax'] ];
-        render(makeusertitle(null,false,"Bolus Settings"), "cfgbolus_form.php", $params, true);
+        render(makeUserTitle(null, false, "Bolus Settings"), "cfgbolus_form.php", $params, true);
     }
 
 ?>

@@ -19,3 +19,8 @@
 <p class="bigred">
     <?= htmlspecialchars($message) ?>
 </p>
+<?php if (isset($extra)) { ?>
+<p class="medred">
+    <?= htmlspecialchars($extra) ?>
+</p>
+<?php } ?>
