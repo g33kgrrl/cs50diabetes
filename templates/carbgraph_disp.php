@@ -27,26 +27,26 @@
     function drawChart()
     {
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'X');
-        data.addColumn('number', 'Carbohydrate Intake');
+        var graph = new google.visualization.DataTable();
+        graph.addColumn('string', 'X');
+        graph.addColumn('number', 'Carbohydrate Intake');
 
         // break out and add a PHP string in here
     <?php
-        // $dailyAvgs = '["12-16-14", 120],   ["12-17-14", 110],  ["12-19-14", 168],
+        // $graphData = '["12-16-14", 120],   ["12-17-14", 110],  ["12-19-14", 168],
         //   ["12-20-14", 117],  ["12-22-14", 128],  ["12-23-14", 97]';
 
-        $carbLog = load_carbLog();
-        $dailyAvgs = "";
+        $rawData = load_carbLog();
+        $graphData = "";
 
-        foreach ($carbLog as $testDate => $entries)
+        foreach ($rawData as $testDate => $entries)
         {
-            $carbDailyAvg = load_carbDailyAvg($carbLog[$testDate]);
-            $dailyAvgs .= '[\'' . $testDate . '\', ' . $carbDailyAvg . '], ';
+            $avg = load_carbDailyAvg($rawData[$testDate]);
+            $graphData .= '[\'' . $testDate . '\',' . $avg . '],';
         }
 
     ?>
-        data.addRows([<?= $dailyAvgs ?>]);
+        graph.addRows([<?= $graphData ?>]);
 
         var options = {
             title: 'Carbohydrate Intake Daily Averages',
@@ -60,7 +60,7 @@
 
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
-        chart.draw(data, options);
+        chart.draw(graph, options);
 
     }
 

@@ -14,10 +14,10 @@
     // configuration
     require("../includes/config.php");
 
-    $weightlog = load_weightLog($FS);
+    $weightLog = load_weightLog();
 
     // Pass weight log history for rendering
     render(makeUserTitle(null, false, "Weight Log"), "weightlog_disp.php",
-           [ "weightlog" => $weightlog ], true );
+           [ "weightLog" => $weightLog ], true );
 
 ?>

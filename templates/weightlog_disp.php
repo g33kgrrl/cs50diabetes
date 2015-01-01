@@ -15,10 +15,7 @@
 
     <h2><?=$title?></h2>
 
-    <?php foreach ($weightLog as $testDate => $entries): ?>
-
     <table class="bg">
-<!--        <caption><h3><?= $testDate ?></h3></caption> -->
         <thead>
             <tr>
                 <th>Date</th>
@@ -27,20 +24,17 @@
         </thead>
         <tbody>
 
-            <? foreach ($entries as $entry): ?>
+    <?php foreach ($weightLog as $entry): ?>
 
             <tr class="R">
                 <td><?= $entry["date"] ?></td>
-                <td><?= $entry["weight"]?></td>
+                <td><?= number_format($entry["weight"], 1)?></td>
             </tr>
 
             <?php endforeach ?>
 
         </tbody>
     </table>
-    <?php endforeach ?>
     <div class="medred">
         <a href="weightgraph.php">Graph It!</a>
     </div>
-
-</div>

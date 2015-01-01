@@ -56,6 +56,13 @@ class FatSecretAPI
         return floor($time / 60 / 60 / 24);
     }
 
+    // Convert FS timestamp (days since epoch) to timestamp (seconds since epoch)
+    //   @param time {timestamp} Seconds since epoch
+    function TimeInt($date)
+    {
+        return $date * 60 * 60 * 24;
+    }
+
     // Display apology graphic and message, plus FS error information
     //   @param msg {string} Apology message
     //   @param ex {FatSecretException} Error structure from FatSecret API
@@ -237,19 +244,10 @@ class FatSecretAPI
         $reqParams = $oauth->BuildRequestParams($url, $this->_consumerKey, $this->_consumerSecret,
                                 $_SESSION['token'], $_SESSION['secret'], $reqUrl);
 
-        // un-comment for debugging
-        $this->DisplayString("query",$reqUrl . '?' . $reqParams);
-
         $response = $this->GetQueryResponse($reqUrl, $reqParams);
-        // un-comment for debugging
-        print 'query response';
-        var_dump($response);
 
         $result = new SimpleXMLElement($response);
         $this->ErrorCheck($result);
-        // un-comment for debugging
-        var_dump($result);
-        exit;
 
         return $result;
     }
