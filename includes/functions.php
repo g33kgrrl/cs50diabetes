@@ -462,34 +462,33 @@
     /**
      * Fetch user's weight log and load into array.
      */
-    function load_weightLog($FS)
+    function load_weightLog()
     {
-        $weightLog = [];
+        $FS = new FatSecretAPI(API_KEY, API_SECRET);
+
+        $data = [];
 
         try
         {
-            $weightlog = $FS->WeightGetMonth();
+            $data = $FS->WeightGetMonth();
         }
         catch(FatSecretException $ex)
         {
             $FS->Apologize("Unable to get FS weight log!", $ex);
         }
-var_dump($weightLog);
-exit;
 
-        foreach ($entries as $entry)
+        $weightLog = [];
+        foreach ($data->day as $entry)
         {
-            $phpTimestamp = strtotime($entry["timestamp"]);
+            $date_int = $entry->date_int;
 
-            $testDate = date("m-d-y", $phpTimestamp);
 
-            $weightLog[$testDate][] = [
-                "dbTimestamp"  => $entry["timestamp"],
-                "phpTimestamp" => $phpTimestamp,
-                "date"         => $testDate,
-                "time"         => date("g:i a", $phpTimestamp),
-                "mealtime"     => $entry["mealtime"],
-                "weight"        => $entry["weight"],
+            $testDate = date("m-d-y", $FS->TimeInt($date_int));
+
+            $weightLog[] = [
+                "date_int" => (int)$date_int,
+                "date"     => $testDate,
+                "weight"   => round($entry->weight_kg * LB_PER_KG * 2) / 2
             ];
         }
 

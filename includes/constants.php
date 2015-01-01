@@ -50,4 +50,7 @@
     //please register at http://platform.fatsecret.com for an API SECRET
     define("API_SECRET", "26dca9bdb29942a49ed69ae32d612a4c"); 
 
+    // Constant to convert between lb and kg
+    define("LB_PER_KG", 2.20462);
+
 ?>

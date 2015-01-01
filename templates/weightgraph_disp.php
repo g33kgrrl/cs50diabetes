@@ -27,22 +27,23 @@
     function drawChart()
     {
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'X');
-        data.addColumn('number', 'Weight');
+        var graph = new google.visualization.DataTable();
+        graph.addColumn('string', 'X');
+        graph.addColumn('number', 'Weight');
 
         // break out and add a PHP string in here
     <?php
-        $weightLog = load_weightLog($FS);
-        $weightStr = "";
+        $rawData = load_weightLog();
 
-        foreach ($weightLog as $testDate => $entries)
+        $graphData = "";
+
+        for ($idx = 0; $idx < sizeof($rawData) ; $idx++)
         {
-            $weightStr .= '[\'' . $testDate . '\', ' . $weightLog[$testDate].weight . '], ';
+            $graphData .= '[\'' . $rawData[$idx]['date'] . '\',' . $rawData[$idx]['weight'] . '],';
         }
 
     ?>
-        data.addRows([<?= $dailyAvgs ?>]);
+        graph.addRows([<?= $graphData ?>]);
 
         var options = {
             title: 'Weight',
@@ -50,13 +51,13 @@
             colors:['red','#004411'],
             width: 1000,
             height: 563,
-            hAxis: { title: 'Time' },
+            hAxis: { title: 'Date' },
             vAxis: { title: 'lb.' }
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
-        chart.draw(data, options);
+        chart.draw(graph, options);
 
     }
 
